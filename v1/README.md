@@ -35,3 +35,6 @@ Error handling
 Documentação (como executar, swagger, c4 model)
 Organização de código, separação de modulo, comentários,
 Histórico de commits
+
+## Outros
+

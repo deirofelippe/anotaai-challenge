@@ -25,7 +25,7 @@
     "paths": {
       "@repositories/*": ["./src/repositories/*"],
       "@usecases/*": ["./src/usecases/*"],
-      "@tests/*": ["./tests/*"]
+      "@tests/*": ["./__tests__/*"]
     }
   },
   "minify": true
