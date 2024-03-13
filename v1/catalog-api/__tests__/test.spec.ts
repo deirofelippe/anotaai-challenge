@@ -1,5 +1,5 @@
 describe('', () => {
-  test('', () => {
+  test('Deve criar', () => {
     expect('teste').toEqual('teste');
   });
 });

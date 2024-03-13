@@ -1,5 +1,8 @@
 dck-app:
 	@docker compose exec -it app ash
+
+dck-run-root-app:
+	@docker container exec -it -u root app ash
 	
 # dck-init-app:
 # 	@docker container run -it --rm -w /home/node/app -v $$(pwd):/home/node/app ./Dockerfile.app ash
@@ -7,9 +10,6 @@ dck-app:
 dck-init-app:
 	@docker container run -it --rm --name app \
 		-v $$(pwd):/home/node/app \
-		-v $$(printenv HOME)/.zshrc:/home/node/.zshrc \
-		-v $$(printenv HOME)/.zsh_history:/home/node/.zsh_history \
-		-v $$(printenv HOME)/.antigenrc:/home/node/ \
 		-p 3000:3000 deirofelippe/anotaai-challenge:v1 ash
 
 dck-build-app:
