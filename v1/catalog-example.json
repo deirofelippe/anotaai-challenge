@@ -1,0 +1,60 @@
+[
+  {
+    "owner": "123",
+    "catalog": [
+      {
+        "category_title": "Computador",
+        "category_description": "Dispositivos para computador",
+        "itens": [
+          {
+            "title": "RTX 3060",
+            "description": "Placa de vídeo",
+            "price": 1699.99
+          },
+          {
+            "title": "Ryzen 5 5600X",
+            "description": "Processador",
+            "price": 1039.99
+          }
+        ]
+      },
+      {
+        "category_title": "Games",
+        "category_description": "Games",
+        "itens": [
+          {
+            "title": "STALKER 2",
+            "description": "FPS",
+            "price": 199.99
+          },
+          {
+            "title": "Red Dead Redemption 2",
+            "description": "TPS",
+            "price": 299.9
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "owner": "456",
+    "catalog": [
+      {
+        "category_title": "Quero comprar",
+        "category_description": "Produtos no geral",
+        "itens": [
+          {
+            "title": "RTX 3060",
+            "description": "Placa de vídeo",
+            "price": 1699.99
+          },
+          {
+            "title": "Logitech MX Keys",
+            "description": "Teclado",
+            "price": 659.0
+          }
+        ]
+      }
+    ]
+  }
+]
