@@ -1,6 +1,9 @@
 dck-app:
 	@docker compose exec -it app ash
 
+dck-mongo:
+	@docker compose exec -it mongodb mongosh -u admin -p password --host mongodb
+
 dck-run-root-app:
 	@docker container exec -it -u root app ash
 	
