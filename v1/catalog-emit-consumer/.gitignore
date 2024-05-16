@@ -1,0 +1,6 @@
+.git
+.*_data
+.*_log
+build
+coverage
+node_modules
