@@ -1,0 +1,4 @@
+.*_data
+signoz/common
+signoz/dashboards
+signoz/clickhouse-setup/data/**/*
