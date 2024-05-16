@@ -1,40 +1,30 @@
-# Anotaai Challenge
+# Desafio do anotaai
 
-## User stories
+## Execute
 
-- Criar produto junto com seu owner
-- Criar categoria junto com seu owner
-- Associar um produto a uma categoria por vez
-- Atualizar os dados do produto e da categoria
-- Produtos e categoria pertencem a somente um owner
-- Haverá multiplas requisições por segundo para editar produtos/categorias, e também busca por categoria
-- Se houver mudança no catalogo de produto (produto e categoria), deverá ser publicada essa mudança no tópico "catalog-emit" no SQS ou RabbitMQ
-- Consumidor que ouve as mudanças no catalogo para um owner especifico
-- Quando o consumer receber a mensagem, busca no banco pelo catalogo do owner, gera um catalogo em json, publica o json no S3
+- make dck-build-app
+- docker compose up -d
+- make dck-app
+- npm ci
+- npm run test
 
-- Product: title, description, price, category, owner ID
-- Category: title, description, owner ID
+## Mongo Express
 
-## Ferramentas
+- localhost:8081
+- login: mongo_express
+- senha: password
 
-SNS SQS S3
-RabbitMQ
-MongoDB
-Docker
-K6
-Terraform
-Localstack
-Nginx
-Nodejs Typescript Express
+## Rabbitmq
 
-Camadas
-Variáveis de ambiente
-Testes de unidade
-Logs
-Error handling
-Documentação (como executar, swagger, c4 model)
-Organização de código, separação de modulo, comentários,
-Histórico de commits
-
-## Outros
-
+- docker compose exec -it rabbitmq ash
+- rabbitmqadmin help subcommands
+- rabbitmqadmin -H localhost -u rabbitmq -p password list exchanges
+- rabbitmqadmin -H localhost -u rabbitmq -p password declare exchange name=catalog type=topic durable=true internal=false auto_delete=false
+- rabbitmqadmin -H localhost -u rabbitmq -p password declare queue name=change durable=true auto_delete=false
+- rabbitmqadmin -H localhost -u rabbitmq -p password declare binding source=catalog destination=change routing_key=catalog.change.\*
+- rabbitmqadmin -H localhost -u rabbitmq -p password publish exchange=catalog routing_key=catalog.change.teste payload='{ "owner": "1" }'
+- rabbitmqadmin -H localhost -u rabbitmq -p password get queue=change ackmode=ack_requeue_true
+  - ack_requeue_true - the messages will be flagged as acknowledged, the messages remain in the queue
+  - reject_requeue_true - the messages will be flagged as rejected, the messages remain in the queue
+  - ack_requeue_false - the messages will be flagged as acknowledged, the messages will be dropped
+  - reject_requeue_false - the messages will be flagged as rejected, the messages will be dropped

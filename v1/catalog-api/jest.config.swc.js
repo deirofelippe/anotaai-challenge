@@ -1,6 +1,6 @@
 module.exports = {
   clearMocks: true,
-  collectCoverage: true,
+  collectCoverage: false,
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   moduleDirectories: ['node_modules', '<rootDir>/'],

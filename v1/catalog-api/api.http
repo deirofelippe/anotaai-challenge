@@ -1,0 +1,23 @@
+@url = http://localhost:3000
+
+###
+GET {{url}}/ HTTP/1.1
+
+###
+DELETE {{url}}/clear-db HTTP/1.1
+
+###
+GET {{url}}/v1/categories HTTP/1.1
+
+###
+POST {{url}}/v1/categories HTTP/1.1
+Content-Type: application/json
+
+{
+    "owner": 1221,
+    "title": "Categoria tesdteeed",
+    "description": ""
+}
+
+###
+GET {{url}}/v1/owners/1/categories HTTP/1.1
