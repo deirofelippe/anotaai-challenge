@@ -1,0 +1,113 @@
+version: "3.8"
+
+services:
+  producer:
+    container_name: producer
+    image: deirofelippe/producer-anotaai-challenge:v1
+    build:
+      context: ./catalog-api
+      dockerfile: Dockerfile.app
+    ports:
+      - 3000:3000
+      - 9229:9229
+    volumes:
+      - "./catalog-api:/home/node/app"
+    networks:
+      - challenge
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+
+  consumer:
+    container_name: consumer
+    image: deirofelippe/consumer-anotaai-challenge:v1
+    build:
+      context: ./catalog-emit-consumer
+      dockerfile: Dockerfile.app
+    ports:
+      - 3001:3000
+      - 9239:9229
+    volumes:
+      - "./catalog-emit-consumer:/home/node/app"
+    networks:
+      - challenge
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512M
+
+  rabbitmq:
+    image: rabbitmq:3.9.29-management-alpine
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=password
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./.rabbitmq_data/:/var/lib/rabbitmq/
+      # - ./.rabbitmq_log/:/var/log/rabbitmq
+    networks:
+      - challenge
+
+  # redis:
+  #   image: redis:6.2.14-alpine3.19
+  #   container_name: redis
+  #   ports:
+  #     - "6379:6379"
+  #   command: redis-server --save 20 1 --loglevel warning --requirepass redispassword
+  #   volumes:
+  #     - ./.redis_data:/data
+  #   networks:
+  #     - challenge
+
+  localstack:
+    container_name: localstack
+    image: localstack/localstack:3.1.0
+    ports:
+      - "4566:4566"
+      - "4510-4559:4510-4559"
+    environment:
+      - DEBUG=0
+      - AWS_DEFAULT_REGION=sa-east-1
+    volumes:
+      - "./.localstack_data:/var/lib/localstack"
+    networks:
+      - challenge
+
+  mongodb:
+    image: mongo:6.0.13-jammy
+    restart: always
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongodb
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./.mongo_data:/data/db
+    networks:
+      - challenge
+
+  mongo-express:
+    image: mongo-express:1.0.2-20-alpine3.18
+    restart: always
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: mongo_express
+      ME_CONFIG_BASICAUTH_PASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:password@mongodb:27017/
+    depends_on:
+      - mongodb
+    networks:
+      - challenge
+
+networks:
+  challenge:
+    driver: bridge
