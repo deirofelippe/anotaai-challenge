@@ -6,11 +6,19 @@ export class CategoryRepository {
     const db = MongoInstance.getInstance();
 
     try {
-      await db.collection('catalog').insertOne({
-        owner: input.owner,
-        category_title: input.title,
-        category_description: input.description
-      });
+      await db.collection('catalog').updateOne(
+        { owner: input.owner },
+        {
+          //@ts-ignore
+          $push: {
+            catalog: {
+              category_title: input.title,
+              category_description: input.description,
+              itens: []
+            }
+          }
+        }
+      );
     } catch (error) {
       console.error('Erro ao criar categoria no banco');
       console.error('Dados: ', JSON.stringify(input));
