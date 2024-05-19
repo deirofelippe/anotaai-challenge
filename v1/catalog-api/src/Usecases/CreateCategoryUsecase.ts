@@ -1,8 +1,8 @@
-import { randomUUID } from 'crypto';
 import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
 import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { CreateCategoryValidator } from '../Validators/CreateCategoryValidator';
 import { ErrorMessages } from '../types';
+import { OwnerRepository } from '../Repositories/OwnerRepository';
 
 export type Category = {
   owner: string;
@@ -17,6 +17,7 @@ export type CreateCategoryOutput = {
 };
 
 export type CreateCategoryUsecaseConstructor = {
+  ownerRepository: OwnerRepository;
   categoryRepository: CategoryRepository;
   newRecordedDataQueue: NewRecordedDataQueue;
 };
@@ -29,7 +30,7 @@ export class CreateCategoryUsecase {
   public async execute(
     input: CreateCategoryInput
   ): Promise<CreateCategoryOutput> {
-    const { categoryRepository, newRecordedDataQueue } =
+    const { categoryRepository, ownerRepository, newRecordedDataQueue } =
       this.createCategoryUsecaseConstructor;
 
     const validator = new CreateCategoryValidator();
@@ -39,23 +40,33 @@ export class CreateCategoryUsecase {
       return { errors: errors };
     }
 
-    const categoryFound = await categoryRepository.findCategoryByTitle({
-      title: input.title
-    });
-
-    if (categoryFound.length > 0) {
-      return { errors: [{ message: 'Categoria já existente' }] };
-    }
-
     const category: Category = {
       owner: newData!.owner,
       title: newData!.title,
       description: newData?.description
     };
-    console.log(category);
+
+    const ownerFound = await ownerRepository.findOwner({
+      owner: category.owner
+    });
+
+    if (ownerFound.length <= 0) {
+      await categoryRepository.createOwnerAndCategory(category);
+      await newRecordedDataQueue.sendMessage({ owner: category.owner });
+
+      return { errors: [] };
+    }
+
+    const categoryFound = await categoryRepository.findCategoryByTitle({
+      owner: category.owner,
+      title: category.title
+    });
+
+    if (categoryFound.length > 0) {
+      return { errors: [{ message: 'Categoria já existe' }] };
+    }
 
     await categoryRepository.createCategory(category);
-
     await newRecordedDataQueue.sendMessage({ owner: category.owner });
 
     return { errors: [] };
