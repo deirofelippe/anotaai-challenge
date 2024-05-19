@@ -26,6 +26,26 @@ export class CategoryRepository {
     }
   }
 
+  public async createOwnerAndCategory(input: Category) {
+    const db = MongoInstance.getInstance();
+
+    try {
+      await db.collection('catalog').insertOne({
+        owner: input.owner,
+        catalog: [
+          {
+            category_title: input.title,
+            category_description: input.description
+          }
+        ]
+      });
+    } catch (error) {
+      console.error('Erro ao criar categoria no banco');
+      console.error('Dados: ', JSON.stringify(input));
+      throw error;
+    }
+  }
+
   public async findCategoryByTitle(input: {
     owner: string;
     title: string;
