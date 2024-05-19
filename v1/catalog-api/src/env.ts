@@ -3,6 +3,7 @@ import 'dotenv/config';
 const nodeEnv: string = process.env.NODE_ENV!;
 
 const isTesting = ['test', 'testing'].includes(nodeEnv);
+const isDevelopment = ['dev', 'development'].includes(nodeEnv);
 const isProduction = ['prod', 'production'].includes(nodeEnv);
 
 const mongoHost = process.env.MONGODB_HOST;

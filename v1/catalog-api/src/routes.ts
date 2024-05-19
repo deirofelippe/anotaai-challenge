@@ -25,6 +25,7 @@ router.delete('/clear-db', async (req: Request, res: Response) => {
 
 const createCategoryController = new CreateCategoryController(
   new CreateCategoryUsecase({
+    ownerRepository: new OwnerRepository(),
     categoryRepository: new CategoryRepository(),
     newRecordedDataQueue: new NewRecordedDataQueue()
   })
