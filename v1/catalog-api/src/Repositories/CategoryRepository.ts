@@ -26,14 +26,18 @@ export class CategoryRepository {
     }
   }
 
-  public async findCategoryByTitle(input: { title: string }): Promise<any[]> {
+  public async findCategoryByTitle(input: {
+    owner: string;
+    title: string;
+  }): Promise<any[]> {
     const db = MongoInstance.getInstance();
 
     try {
       return await db
         .collection('catalog')
         .find({
-          category_title: input.title
+          owner: input.owner,
+          'catalog.category_title': input.title
         })
         .project({
           _id: 0,
