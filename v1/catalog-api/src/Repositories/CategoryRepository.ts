@@ -1,9 +1,9 @@
-import { MongoInstance } from '../MongoInstance';
+import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 import { Category } from '../Usecases/CreateCategoryUsecase';
 
 export class CategoryRepository {
   public async createCategory(input: Category) {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
 
     try {
       await db.collection('catalog').updateOne(
@@ -27,7 +27,7 @@ export class CategoryRepository {
   }
 
   public async createOwnerAndCategory(input: Category) {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
 
     try {
       await db.collection('catalog').insertOne({
@@ -50,7 +50,7 @@ export class CategoryRepository {
     owner: string;
     title: string;
   }): Promise<any[]> {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
 
     try {
       return await db
@@ -74,7 +74,7 @@ export class CategoryRepository {
   }
 
   public async findCategoriesByOwner(input: { owner: string }): Promise<any[]> {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
     console.log(input);
 
     try {
@@ -98,7 +98,7 @@ export class CategoryRepository {
   }
 
   public async findAll(): Promise<any[]> {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
 
     try {
       return await db
@@ -116,7 +116,7 @@ export class CategoryRepository {
   }
 
   public async dropCollection(input?: { name: string }) {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
 
     try {
       await db.collection('catalog').drop({});

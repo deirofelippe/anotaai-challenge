@@ -1,8 +1,8 @@
-import { MongoInstance } from '../MongoInstance';
+import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 
 export class OwnerRepository {
   public async findOwner(input: { owner: string }): Promise<any[]> {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
 
     try {
       return await db

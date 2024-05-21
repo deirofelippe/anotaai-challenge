@@ -1,9 +1,9 @@
-import { MongoInstance } from '../MongoInstance';
+import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 import { Product } from '../Usecases/CreateProductUsecase';
 
 export class ProductRepository {
   public async createProduct(input: Product) {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
 
     try {
       await db.collection('catalog').updateOne(
@@ -34,7 +34,7 @@ export class ProductRepository {
     category: string;
     title: string;
   }): Promise<any[]> {
-    const db = MongoInstance.getInstance();
+    const db = MongoDBSingleton.getInstance();
 
     try {
       return await db

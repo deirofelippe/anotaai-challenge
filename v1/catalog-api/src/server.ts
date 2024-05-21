@@ -1,8 +1,10 @@
 import express from 'express';
-import { MongoInstance } from './MongoInstance';
-import { RabbitMQInstance } from './RabbitMQInstance';
 import { errorHandling } from './errorHandling';
-import { apiRoutes } from './routes';
+import { indexRoutes } from './Routes/routes';
+import { categoryRoutes } from './Routes/categories.routes';
+import { productRoutes } from './Routes/products.routes';
+import { RabbitMQSingleton } from './Config/RabbitMQSingleton';
+import { MongoDBSingleton } from './Config/MongoDBSingleton';
 
 const app = express();
 const port = 3000;
@@ -10,14 +12,17 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(errorHandling);
-app.use(apiRoutes);
+
+app.use(indexRoutes);
+app.use(categoryRoutes);
+app.use(productRoutes);
 
 const server = app.listen(port, () => {
   console.log(`Express listening on port ${port}`);
 });
 
-RabbitMQInstance.connect().then(() => {});
-MongoInstance.connect().then(() => {});
+RabbitMQSingleton.connect().then(() => {});
+MongoDBSingleton.connect().then(() => {});
 
 const onShutdown =
   (input: { exitCode: number; signalCode: string }) =>
@@ -33,8 +38,8 @@ const onShutdown =
       console.log(arg2);
     }
 
-    await RabbitMQInstance.close();
-    await MongoInstance.close();
+    await RabbitMQSingleton.close();
+    await MongoDBSingleton.close();
 
     server.close(() => {
       console.log('Express connection closed');
