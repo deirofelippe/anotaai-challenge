@@ -1,5 +1,9 @@
 # Desafio do anotaai
 
+## Pipeline local
+
+- gh extension exec act
+
 ## Execute
 
 - make dck-build-app
@@ -28,3 +32,4 @@
   - reject_requeue_true - the messages will be flagged as rejected, the messages remain in the queue
   - ack_requeue_false - the messages will be flagged as acknowledged, the messages will be dropped
   - reject_requeue_false - the messages will be flagged as rejected, the messages will be dropped
+
