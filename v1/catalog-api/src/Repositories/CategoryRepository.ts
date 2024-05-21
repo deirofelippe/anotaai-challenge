@@ -105,10 +105,7 @@ export class CategoryRepository {
         .collection('catalog')
         .find()
         .project({
-          _id: 0,
-          owner: 1,
-          category_title: 1,
-          category_description: 1
+          _id: 0
         })
         .toArray();
     } catch (error) {

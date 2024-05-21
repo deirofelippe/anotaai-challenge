@@ -49,6 +49,8 @@ export class CreateCategoryUsecase {
     const ownerFound = await ownerRepository.findOwner({
       owner: category.owner
     });
+    console.log(ownerFound);
+    console.log(category);
 
     if (ownerFound.length <= 0) {
       await categoryRepository.createOwnerAndCategory(category);

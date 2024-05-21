@@ -48,10 +48,10 @@ router.post(
   createProductController.execute.bind(createProductController)
 );
 
-router.get('/v1/categories', async (req: Request, res: Response) => {
+router.get('/v1/all', async (req: Request, res: Response) => {
   try {
-    const categories = await new CategoryRepository().findAll();
-    return res.status(200).json(categories);
+    const all = await new CategoryRepository().findAll();
+    return res.status(200).json(all);
   } catch (error) {
     return res.status(500).json({ message: 'Erro no servidor' });
   }

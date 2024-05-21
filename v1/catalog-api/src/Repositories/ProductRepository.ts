@@ -1,4 +1,3 @@
-import { PushOperator } from 'mongodb';
 import { MongoInstance } from '../MongoInstance';
 import { Product } from '../Usecases/CreateProductUsecase';
 
