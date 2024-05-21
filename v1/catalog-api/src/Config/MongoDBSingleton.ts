@@ -7,21 +7,21 @@ import {
 } from './env';
 import { MongoClient } from 'mongodb';
 
-export class MongoInstance {
+export class MongoDBSingleton {
   private static connection?: MongoClient = undefined;
 
   private constructor() {}
 
   public static getInstance() {
-    if (!MongoInstance.connection) {
+    if (!MongoDBSingleton.connection) {
       throw new Error('A conexão com o MongoDB não foi aberta.');
     }
 
-    return MongoInstance.connection?.db(mongoDatabase);
+    return MongoDBSingleton.connection?.db(mongoDatabase);
   }
 
   public static async connect() {
-    if (MongoInstance.connection) {
+    if (MongoDBSingleton.connection) {
       return this;
     }
 
@@ -30,17 +30,17 @@ export class MongoInstance {
     const client = new MongoClient(url, {
       auth: { username: mongoUser, password: mongoPassword }
     });
-    MongoInstance.connection = await client.connect();
+    MongoDBSingleton.connection = await client.connect();
     console.log('MongoDB connection successfully');
 
     return this;
   }
 
   public static async close() {
-    if (!MongoInstance.connection) {
+    if (!MongoDBSingleton.connection) {
       return;
     }
 
-    await MongoInstance.connection?.close();
+    await MongoDBSingleton.connection?.close();
   }
 }

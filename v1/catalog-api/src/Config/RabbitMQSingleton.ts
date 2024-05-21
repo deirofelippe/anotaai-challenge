@@ -1,7 +1,7 @@
 import { rabbitUsername, rabbitPassword, rabbitHost, rabbitPort } from './env';
 import { Connection, Consumer, Publisher } from 'rabbitmq-client';
 
-export class RabbitMQInstance {
+export class RabbitMQSingleton {
   private static connection?: Connection = undefined;
   private static publisher?: Publisher = undefined;
   private static consumer?: Consumer = undefined;
@@ -9,23 +9,23 @@ export class RabbitMQInstance {
   private constructor() {}
 
   public static getInstance() {
-    if (!RabbitMQInstance.connection) {
+    if (!RabbitMQSingleton.connection) {
       throw new Error('A conexão com o RabbitMQ não foi aberta.');
     }
 
-    return RabbitMQInstance.connection;
+    return RabbitMQSingleton.connection;
   }
 
   public static getPublisher() {
-    if (!RabbitMQInstance.connection) {
+    if (!RabbitMQSingleton.connection) {
       throw new Error('A conexão com o RabbitMQ não foi aberta.');
     }
 
-    return RabbitMQInstance.publisher;
+    return RabbitMQSingleton.publisher;
   }
 
   public static async connect() {
-    if (RabbitMQInstance.connection) {
+    if (RabbitMQSingleton.connection) {
       return this;
     }
 
@@ -39,7 +39,7 @@ export class RabbitMQInstance {
     rabbitmq.on('connection', () => {
       console.log('RabbitMQ connection successfully');
     });
-    RabbitMQInstance.connection = rabbitmq;
+    RabbitMQSingleton.connection = rabbitmq;
 
     await this.declareExchangeAndQueue();
 
@@ -47,7 +47,7 @@ export class RabbitMQInstance {
   }
 
   private static async declareExchangeAndQueue() {
-    const rabbitmq = RabbitMQInstance.connection!;
+    const rabbitmq = RabbitMQSingleton.connection!;
 
     await rabbitmq.exchangeDeclare({
       exchange: 'catalog',
@@ -77,19 +77,19 @@ export class RabbitMQInstance {
       ],
       queues: [{ queue: 'change', durable: true, autoDelete: false }]
     });
-    RabbitMQInstance.publisher = publisher;
+    RabbitMQSingleton.publisher = publisher;
   }
 
   public static async close() {
-    if (!RabbitMQInstance.connection) {
+    if (!RabbitMQSingleton.connection) {
       return;
     }
 
     console.log('Fechando publisher...');
-    await RabbitMQInstance.publisher?.close();
+    await RabbitMQSingleton.publisher?.close();
     console.log('Fechando consumer...');
-    await RabbitMQInstance.consumer?.close();
+    await RabbitMQSingleton.consumer?.close();
     console.log('Fechando connection...');
-    await RabbitMQInstance.connection?.close();
+    await RabbitMQSingleton.connection?.close();
   }
 }
