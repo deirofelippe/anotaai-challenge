@@ -1,11 +1,11 @@
-import { MongoInstance } from '../../src/MongoInstance';
+import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
 import {
   CreateCategoryInput,
   CreateCategoryUsecase
 } from '../../src/Usecases/CreateCategoryUsecase';
 import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
 import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
-import { RabbitMQInstance } from '../../src/RabbitMQInstance';
+import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
 import { faker } from '@faker-js/faker';
 import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
 import { Collection, Document } from 'mongodb';
@@ -14,15 +14,15 @@ describe('CreateCategoryUsecase', () => {
   let mongoInstance: Collection<Document>;
 
   beforeAll(async () => {
-    await MongoInstance.connect();
-    await RabbitMQInstance.connect();
+    await MongoDBSingleton.connect();
+    await RabbitMQSingleton.connect();
 
-    mongoInstance = MongoInstance.getInstance().collection('catalog');
+    mongoInstance = MongoDBSingleton.getInstance().collection('catalog');
   });
 
   afterAll(async () => {
-    await MongoInstance.close();
-    await RabbitMQInstance.close();
+    await MongoDBSingleton.close();
+    await RabbitMQSingleton.close();
   });
 
   describe('Create category', () => {
