@@ -1,5 +1,7 @@
+import { DeleteProductUsecaseInput } from '@tests/integration/delete-product.spec';
 import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 import { Product } from '../Usecases/CreateProductUsecase';
+import { log } from '../Config/Logger';
 
 export class ProductRepository {
   public async createProduct(input: Product) {
@@ -21,6 +23,31 @@ export class ProductRepository {
           }
         },
         { arrayFilters: [{ 'e1.category_title': input.category }] }
+      );
+    } catch (error) {
+      console.error('Erro ao criar produto no banco');
+      console.error('Dados: ', JSON.stringify(input));
+      throw error;
+    }
+  }
+
+  public async deleteProduct(input: DeleteProductUsecaseInput) {
+    const db = MongoDBSingleton.getInstance();
+
+    try {
+      await db.collection('catalog').updateOne(
+        {
+          owner: input.owner,
+          'catalog.category_title': input.category
+        },
+        {
+          //@ts-ignore
+          $pull: {
+            'catalog.$[].itens': {
+              title: input.product
+            }
+          }
+        }
       );
     } catch (error) {
       console.error('Erro ao criar produto no banco');
