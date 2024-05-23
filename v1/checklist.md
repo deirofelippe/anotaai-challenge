@@ -1,10 +1,30 @@
 #
 
+update e delete de category e product
+consumer
+performance e seguranca
+tests, k6, c4model, rabbitmq dlq idempotencia, sonarqube, act, observabilidade, k8s, terraform backend, microservices, swagger, apm influxdb
+
+testcontainers, testes unitarios e de integracao, logs, mongodb catalogo na msm collection, eslint
+
+dead letter queue
+rabbitmq availability
+logs e alertas telegram
+observabilidade
+apm
+error handling
+vault / secret manager
+
+MS pra consistencia no banco
+banco pra cada MS
+
+nodejs erick wendel: child process, autocannon 0x, graceful, streams, http, promises, yield, generators
+
+
 recebe owner, valida owner, busca owner products e categories, monta o json, envia pro s3
 MS DE SECRET, MS DE ATUALIZAR BANCO OS OUTROS BANCOS
 observabilidade
 apm k6 influxdb grafana
-localstack terraform s3
 resiliencia, alta disponibilidade (k8s)
 
 idempotencia no rabbitmq, pode ter várias mensagens do mesmo owner
@@ -24,6 +44,23 @@ msg para consistencia eventual ()
   - C4 Model
 - Commits semânticos
 - Variáveis de ambiente
+
+## stack
+
+sonarqube eslint
+wiremock testcontainers nock k6 cypress
+* aws ec2 s3 sqs sns lambda dynamodb cloudwatch
+* fila rabbitmq
+cache redis
+* docker k8s
+log apm observabilidade
+postgresql
+* mongodb
+ci/cd github actions act
+ansible
+terraform localstack
+nginx kong
+vagrant
 
 ## c4 model
 
@@ -64,27 +101,3 @@ chamada grpc para
 - evite chamadas em cascada
   - significa muitos microservicos e muitas dependencias, verifique se da pra juntar e se da pra usar mensageria
 
-##
-
-organizar o codigo
-eslint
-k6
-observabilidade
-
-##
-
-wiremock
-testcontainers
-nock
-k6
-cypress
-jest
-
-logs
-
-sonarqube
-grafana
-jenkins
-zabbix
-
-## portifolio
