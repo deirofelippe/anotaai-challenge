@@ -74,11 +74,5 @@ export class DeleteProductUsecase {
     await newRecordedDataQueue.sendMessage({ owner: product.owner });
 
     return { errors: [] };
-    // valida campos
-    //verifica se owner existe e pode retornar error
-    //verifica se category existe e pode retornar error
-    //verifica se product existe e pode retornar error
-    //cria
-    //publica msg
   }
 }

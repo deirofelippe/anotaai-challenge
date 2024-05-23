@@ -94,5 +94,56 @@ describe('DeleteProductUsecase', () => {
       expect(inputQueue.owner).toEqual(input.owner);
       expect(output.errors).toHaveLength(0);
     });
+
+    test('Deve dar erro de owner não existente', async () => {
+      const input: DeleteProductUsecaseInput = {
+        owner: '32',
+        category: 'Computador',
+        product: 'Ryzen 5 5600X'
+      };
+
+      const sendMessageMock = jest
+        .spyOn(NewRecordedDataQueue.prototype, 'sendMessage')
+        .mockImplementation(async () => {});
+
+      const output = await deleteProductUsecase.execute(input);
+
+      expect(sendMessageMock).toHaveBeenCalledTimes(0);
+      expect(output.errors[0].message).toContain('Owner não existe');
+    });
+
+    test('Deve dar erro de categoria não existente', async () => {
+      const input: DeleteProductUsecaseInput = {
+        owner: '321',
+        category: 'Games',
+        product: 'Ryzen 5 5600X'
+      };
+
+      const sendMessageMock = jest
+        .spyOn(NewRecordedDataQueue.prototype, 'sendMessage')
+        .mockImplementation(async () => {});
+
+      const output = await deleteProductUsecase.execute(input);
+
+      expect(sendMessageMock).toHaveBeenCalledTimes(0);
+      expect(output.errors[0].message).toContain('Categoria não existe');
+    });
+
+    test('Deve dar erro de produto não existente', async () => {
+      const input: DeleteProductUsecaseInput = {
+        owner: '321',
+        category: 'Computador',
+        product: 'Monitor LG UltraGrear 27"'
+      };
+
+      const sendMessageMock = jest
+        .spyOn(NewRecordedDataQueue.prototype, 'sendMessage')
+        .mockImplementation(async () => {});
+
+      const output = await deleteProductUsecase.execute(input);
+
+      expect(sendMessageMock).toHaveBeenCalledTimes(0);
+      expect(output.errors[0].message).toContain('Produto não existe');
+    });
   });
 });
