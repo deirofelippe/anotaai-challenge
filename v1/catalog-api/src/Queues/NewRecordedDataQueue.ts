@@ -1,10 +1,10 @@
-import { RabbitMQInstance } from '../RabbitMQInstance';
+import { RabbitMQSingleton } from '../Config/RabbitMQSingleton';
 
 export type NewRecordedDataQueueInput = { owner: string };
 
 export class NewRecordedDataQueue {
   public async sendMessage(input: NewRecordedDataQueueInput) {
-    const publisher = RabbitMQInstance.getPublisher()!;
+    const publisher = RabbitMQSingleton.getPublisher()!;
 
     try {
       await publisher.send(

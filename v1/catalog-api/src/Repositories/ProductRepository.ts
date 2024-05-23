@@ -1,7 +1,6 @@
-import { DeleteProductUsecaseInput } from '@tests/integration/delete-product.spec';
 import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 import { Product } from '../Usecases/CreateProductUsecase';
-import { log } from '../Config/Logger';
+import { DeleteProductUsecaseInput } from '../Usecases/DeleteProductUsecase';
 
 export class ProductRepository {
   public async createProduct(input: Product) {
