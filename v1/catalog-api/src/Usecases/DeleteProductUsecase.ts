@@ -2,6 +2,7 @@ import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
 import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { OwnerRepository } from '../Repositories/OwnerRepository';
 import { ProductRepository } from '../Repositories/ProductRepository';
+import { DeleteProductValidator } from '../Validators/DeleteProductValidator';
 
 export type DeleteProductUsecaseInput = {
   product: string;
@@ -29,18 +30,17 @@ export class DeleteProductUsecase {
       newRecordedDataQueue
     } = this.deleteProductUsecaseConstructor;
 
-    // const validator = new DeleteProductValidator();
-    // const { newData, errors } = validator.validate(input);
-    const newData = input;
+    const validator = new DeleteProductValidator();
+    const { newData, errors } = validator.validate(input);
 
-    // if (errors.length > 0) {
-    //   return { errors: errors };
-    // }
+    if (errors.length > 0) {
+      return { errors: errors };
+    }
 
     const product: DeleteProductUsecaseInput = {
-      owner: input.owner,
-      category: input.category,
-      product: input.product
+      owner: newData!.owner,
+      category: newData!.category,
+      product: newData!.product
     };
 
     const ownerFound = await ownerRepository.findOwner({
