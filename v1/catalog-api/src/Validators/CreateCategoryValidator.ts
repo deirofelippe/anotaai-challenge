@@ -1,13 +1,13 @@
 import { ValidationError } from 'yup';
-import { CreateCategoryInput } from '../Usecases/CreateCategoryUsecase';
 import { ErrorMessages } from '../types';
 import { createCategorySchema } from './Schema/CreateCategorySchema';
+import { CreateCategoryUsecaseInput } from '../Usecases/CreateCategoryUsecase';
 
-export type CreateCategoryValidatorInput = CreateCategoryInput;
+export type CreateCategoryValidatorInput = CreateCategoryUsecaseInput;
 
 export type CreateCategoryValidatorOutput = {
   errors: ErrorMessages['errors'];
-  newData?: CreateCategoryInput;
+  newData?: CreateCategoryUsecaseInput;
 };
 
 export class CreateCategoryValidator {
@@ -34,7 +34,7 @@ export class CreateCategoryValidator {
 
     let data;
     try {
-      data = schema.cast(input) as CreateCategoryInput;
+      data = schema.cast(input) as CreateCategoryUsecaseInput;
     } catch (error) {
       throw error;
     }
