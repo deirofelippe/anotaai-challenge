@@ -20,6 +20,7 @@ describe('DeleteProductUsecase', () => {
     await RabbitMQSingleton.connect();
 
     mongoInstance = MongoDBSingleton.getInstance().collection('catalog');
+    await mongoInstance.insertOne({});
   });
 
   afterAll(async () => {
