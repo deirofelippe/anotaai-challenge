@@ -1,14 +1,14 @@
 import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
-import {
-  CreateCategoryInput,
-  CreateCategoryUsecase
-} from '../../src/Usecases/CreateCategoryUsecase';
 import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
 import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
 import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
 import { faker } from '@faker-js/faker';
 import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
 import { Collection, Document } from 'mongodb';
+import {
+  CreateCategoryUsecase,
+  CreateCategoryUsecaseInput
+} from '../../src/Usecases/CreateCategoryUsecase';
 
 describe('CreateCategoryUsecase', () => {
   let mongoInstance: Collection<Document>;
@@ -18,6 +18,7 @@ describe('CreateCategoryUsecase', () => {
     await RabbitMQSingleton.connect();
 
     mongoInstance = MongoDBSingleton.getInstance().collection('catalog');
+    await mongoInstance.insertOne({});
   });
 
   afterAll(async () => {
@@ -34,7 +35,6 @@ describe('CreateCategoryUsecase', () => {
 
     beforeEach(async () => {
       await mongoInstance.drop();
-
       const catalog = [
         {
           owner: '321',
@@ -58,7 +58,6 @@ describe('CreateCategoryUsecase', () => {
           ]
         }
       ];
-
       await mongoInstance.insertMany(catalog);
     });
 
@@ -67,7 +66,7 @@ describe('CreateCategoryUsecase', () => {
     });
 
     test('Deve criar categoria', async () => {
-      const category: CreateCategoryInput = {
+      const category: CreateCategoryUsecaseInput = {
         owner: '321',
         title: 'Games',
         description: 'Descrição da categoria 1'
@@ -92,7 +91,7 @@ describe('CreateCategoryUsecase', () => {
     });
 
     test('Deve criar categoria com novo owner', async () => {
-      const category: CreateCategoryInput = {
+      const category: CreateCategoryUsecaseInput = {
         owner: '123',
         title: 'Games',
         description: 'Descrição da categoria 1'
@@ -115,7 +114,7 @@ describe('CreateCategoryUsecase', () => {
     });
 
     test('Não deve criar categoria já existente', async () => {
-      const category: CreateCategoryInput = {
+      const category: CreateCategoryUsecaseInput = {
         owner: '321',
         title: 'Computador',
         description: 'Descrição da categoria 1'
@@ -135,7 +134,7 @@ describe('CreateCategoryUsecase', () => {
       [{ title: '       ', description: '          ' }],
       [{ title: '', description: '' }]
     ])('Deve dar erro de valor não preenchido', async (data: any) => {
-      const category: CreateCategoryInput = {
+      const category: CreateCategoryUsecaseInput = {
         owner: '123',
         title: data.title,
         description: data.description
@@ -147,7 +146,7 @@ describe('CreateCategoryUsecase', () => {
     });
 
     test('Deve dar erro de valor excedido', async () => {
-      const category: CreateCategoryInput = {
+      const category: CreateCategoryUsecaseInput = {
         owner: '123',
         title: faker.lorem.words({ min: 128, max: 128 }),
         description: faker.lorem.words({ min: 512, max: 512 })
