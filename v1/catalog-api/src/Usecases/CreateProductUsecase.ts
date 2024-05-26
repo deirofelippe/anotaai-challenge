@@ -13,9 +13,9 @@ export type Product = {
   price: number;
 };
 
-export type CreateProductInput = Product;
+export type CreateProductUsecaseInput = Product;
 
-export type CreateProductOutput = {
+export type CreateProductUsecaseOutput = {
   errors: ErrorMessages['errors'];
 };
 
@@ -32,8 +32,8 @@ export class CreateProductUsecase {
   ) {}
 
   public async execute(
-    input: CreateProductInput
-  ): Promise<CreateProductOutput> {
+    input: CreateProductUsecaseInput
+  ): Promise<CreateProductUsecaseOutput> {
     const {
       productRepository,
       categoryRepository,
