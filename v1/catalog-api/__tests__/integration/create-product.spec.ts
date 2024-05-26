@@ -1,8 +1,4 @@
 import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
-import {
-  CreateProductInput,
-  CreateProductUsecase
-} from '../../src/Usecases/CreateProductUsecase';
 import { ProductRepository } from '../../src/Repositories/ProductRepository';
 import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
 import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
@@ -10,6 +6,10 @@ import { faker } from '@faker-js/faker';
 import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
 import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
 import { Collection, Document } from 'mongodb';
+import {
+  CreateProductUsecase,
+  CreateProductUsecaseInput
+} from '../../src/Usecases/CreateProductUsecase';
 
 describe('CreateProductUsecase', () => {
   let mongoInstance: Collection<Document>;
@@ -19,6 +19,7 @@ describe('CreateProductUsecase', () => {
     await RabbitMQSingleton.connect();
 
     mongoInstance = MongoDBSingleton.getInstance().collection('catalog');
+    await mongoInstance.insertOne({});
   });
 
   afterAll(async () => {
@@ -69,7 +70,7 @@ describe('CreateProductUsecase', () => {
     });
 
     test('Deve criar produto', async () => {
-      const product: CreateProductInput = {
+      const product: CreateProductUsecaseInput = {
         owner: '321',
         category: 'Computador',
         title: 'Monitor',
@@ -94,7 +95,7 @@ describe('CreateProductUsecase', () => {
     });
 
     test('Deve dar erro de owner não existente', async () => {
-      const product: CreateProductInput = {
+      const product: CreateProductUsecaseInput = {
         owner: '32',
         category: 'Computador',
         title: 'Monitor',
@@ -113,7 +114,7 @@ describe('CreateProductUsecase', () => {
     });
 
     test('Deve dar erro de categoria não existente', async () => {
-      const product: CreateProductInput = {
+      const product: CreateProductUsecaseInput = {
         owner: '321',
         category: 'Comp',
         title: 'Monitor',
@@ -132,7 +133,7 @@ describe('CreateProductUsecase', () => {
     });
 
     test('Deve dar erro de produto já existente', async () => {
-      const product: CreateProductInput = {
+      const product: CreateProductUsecaseInput = {
         owner: '321',
         category: 'Computador',
         title: 'RTX 3060',
