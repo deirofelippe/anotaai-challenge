@@ -26,6 +26,28 @@ export class CategoryRepository {
     }
   }
 
+  public async deleteCategory(input: { owner: string; category: string }) {
+    const db = MongoDBSingleton.getInstance();
+
+    try {
+      await db.collection('catalog').updateOne(
+        { owner: input.owner },
+        {
+          //@ts-ignore
+          $pull: {
+            catalog: {
+              category_title: input.category
+            }
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Erro ao criar categoria no banco');
+      console.error('Dados: ', JSON.stringify(input));
+      throw error;
+    }
+  }
+
   public async createOwnerAndCategory(input: Category) {
     const db = MongoDBSingleton.getInstance();
 
