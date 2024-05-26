@@ -10,9 +10,9 @@ export type Category = {
   description?: string;
 };
 
-export type CreateCategoryInput = Category;
+export type CreateCategoryUsecaseInput = Category;
 
-export type CreateCategoryOutput = {
+export type CreateCategoryUsecaseOutput = {
   errors: ErrorMessages['errors'];
 };
 
@@ -28,8 +28,8 @@ export class CreateCategoryUsecase {
   ) {}
 
   public async execute(
-    input: CreateCategoryInput
-  ): Promise<CreateCategoryOutput> {
+    input: CreateCategoryUsecaseInput
+  ): Promise<CreateCategoryUsecaseOutput> {
     const { categoryRepository, ownerRepository, newRecordedDataQueue } =
       this.createCategoryUsecaseConstructor;
 
@@ -49,8 +49,6 @@ export class CreateCategoryUsecase {
     const ownerFound = await ownerRepository.findOwner({
       owner: category.owner
     });
-    console.log(ownerFound);
-    console.log(category);
 
     if (ownerFound.length <= 0) {
       await categoryRepository.createOwnerAndCategory(category);
