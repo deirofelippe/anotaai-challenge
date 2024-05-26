@@ -1,13 +1,13 @@
 import { ValidationError } from 'yup';
-import { CreateProductInput } from '../Usecases/CreateProductUsecase';
+import { CreateProductUsecaseInput } from '../Usecases/CreateProductUsecase';
 import { ErrorMessages } from '../types';
 import { createProductSchema } from './Schema/CreateProductSchema';
 
-export type CreateProductValidatorInput = CreateProductInput;
+export type CreateProductValidatorInput = CreateProductUsecaseInput;
 
 export type CreateProductValidatorOutput = {
   errors: ErrorMessages['errors'];
-  newData?: CreateProductInput;
+  newData?: CreateProductUsecaseInput;
 };
 
 export class CreateProductValidator {
@@ -34,7 +34,7 @@ export class CreateProductValidator {
 
     let data;
     try {
-      data = schema.cast(input) as CreateProductInput;
+      data = schema.cast(input) as CreateProductUsecaseInput;
     } catch (error) {
       throw error;
     }
