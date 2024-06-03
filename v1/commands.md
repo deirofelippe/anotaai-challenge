@@ -1,6 +1,6 @@
 # Commands Mongosh
 
-docker compose exec -it mongodb mongosh -u mongodb -p password --host mongodb
+docker compose exec -it mongodb mongosh -u mongodb -p password --host mongodb desafio
 
 ## Operações
 
@@ -133,23 +133,35 @@ db.catalog.update({
 ### Atualiza campo do produto
 
 db.catalog.update({
-    "owner":"1234",
-    "catalog.itens.title": "Red Dead Redemption 2"
+    "owner":"123"
 },{
     "$set":{
-        "catalog.$[].itens.$[].price": 300.10
+        "catalog.$[e1].itens.$[e2].price": 123.45,
+        "catalog.$[e1].itens.$[e2].title": "Title atualizado",
+        "catalog.$[e1].itens.$[e2].description": "Description atualizado",
     }
+},{
+    arrayFilters: [
+        { 
+            "e1.category_title": "Games",
+            "e2.title": "Red Dead Redemption 2",
+        }
+    ]
 })
+
 
 ### Atualiza campo da categoria
 
 db.catalog.update({
-    "owner":"1234",
-    "catalog.category_title": "Games"
+    "owner":"321"
 },{
     "$set":{
-        "catalog.$[].category_title": "Game"
+        "catalog.$[e1].category_title": "GAMES"
     }
+},{
+    arrayFilters: [
+        { "e1.category_title": "Games2" }
+    ]
 })
 
 ### Deleta produto da categoria
