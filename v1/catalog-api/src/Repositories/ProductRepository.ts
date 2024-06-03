@@ -1,3 +1,4 @@
+import { Document, UpdateFilter } from 'mongodb';
 import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 import { Product } from '../Usecases/CreateProductUsecase';
 import { DeleteProductUsecaseInput } from '../Usecases/DeleteProductUsecase';
@@ -25,6 +26,54 @@ export class ProductRepository {
       );
     } catch (error) {
       console.error('Erro ao criar produto no banco');
+      console.error('Dados: ', JSON.stringify(input));
+      throw error;
+    }
+  }
+
+  public async updateCategory(input: UpdateProductRepositoryInput) {
+    const db = MongoDBSingleton.getInstance();
+
+    const updateFilter: UpdateFilter<Document> = {
+      $set: {}
+    };
+
+    if (input.fields.title) {
+      updateFilter.$set = {
+        ...updateFilter.$set,
+        'catalog.$[e1].itens.$[e2].title': input.fields.title
+      };
+    }
+    if (input.fields.description) {
+      updateFilter.$set = {
+        ...updateFilter.$set,
+        'catalog.$[e1].itens.$[e2].description': input.fields.description
+      };
+    }
+    if (input.fields.price) {
+      updateFilter.$set = {
+        ...updateFilter.$set,
+        'catalog.$[e1].itens.$[e2].price': input.fields.description
+      };
+    }
+
+    try {
+      await db.collection('catalog').updateOne(
+        {
+          owner: input.owner
+        },
+        updateFilter,
+        {
+          arrayFilters: [
+            {
+              'e1.category_title': input.category,
+              'e2.title': input.product
+            }
+          ]
+        }
+      );
+    } catch (error) {
+      console.error('Erro ao criar categoria no banco');
       console.error('Dados: ', JSON.stringify(input));
       throw error;
     }
