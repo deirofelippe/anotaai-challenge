@@ -1,5 +1,10 @@
+import { Document, UpdateFilter } from 'mongodb';
+import { log } from '../Config/Logger';
 import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 import { Category } from '../Usecases/CreateCategoryUsecase';
+import { UpdateCategoryUsecaseInput } from '../Usecases/UpdateCategoryUsecase';
+
+export type UpdateCategoryRepositoryInput = UpdateCategoryUsecaseInput;
 
 export class CategoryRepository {
   public async createCategory(input: Category) {
@@ -18,6 +23,42 @@ export class CategoryRepository {
             }
           }
         }
+      );
+    } catch (error) {
+      console.error('Erro ao criar categoria no banco');
+      console.error('Dados: ', JSON.stringify(input));
+      throw error;
+    }
+  }
+
+  public async updateCategory(input: UpdateCategoryRepositoryInput) {
+    const db = MongoDBSingleton.getInstance();
+
+    const updateFilter: UpdateFilter<Document> = {
+      $set: {}
+    };
+
+    if (input.fields.title) {
+      updateFilter.$set = {
+        ...updateFilter.$set,
+        'catalog.$[e1].category_title': input.fields.title
+      };
+    }
+    if (input.fields.description) {
+      updateFilter.$set = {
+        ...updateFilter.$set,
+        'catalog.$[e1].category_description': input.fields.description
+      };
+    }
+
+    try {
+      await db.collection('catalog').updateOne(
+        {
+          owner: input.owner
+        },
+
+        updateFilter,
+        { arrayFilters: [{ 'e1.category_title': input.category }] }
       );
     } catch (error) {
       console.error('Erro ao criar categoria no banco');
