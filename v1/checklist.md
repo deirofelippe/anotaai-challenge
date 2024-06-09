@@ -1,7 +1,5 @@
 #
 
-update e delete de category e product
-consumer
 performance e seguranca
 tests, k6, c4model, rabbitmq dlq idempotencia, sonarqube, act, observabilidade, k8s, terraform backend, microservices, swagger, apm influxdb
 

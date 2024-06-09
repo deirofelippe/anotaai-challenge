@@ -136,15 +136,17 @@ db.catalog.update({
     "owner":"123"
 },{
     "$set":{
-        "catalog.$[e1].itens.$[e2].price": 123.45,
-        "catalog.$[e1].itens.$[e2].title": "Title atualizado",
-        "catalog.$[e1].itens.$[e2].description": "Description atualizado",
+        "catalog.$[e1].itens.$[e2].price": 500.00,
+        "catalog.$[e1].itens.$[e2].title": ".",
+        "catalog.$[e1].itens.$[e2].description": ".",
     }
 },{
     arrayFilters: [
         { 
-            "e1.category_title": "Games",
-            "e2.title": "Red Dead Redemption 2",
+            "e1.category_title": "Games"
+        },
+        {
+            "e2.title": "Teste",
         }
     ]
 })
@@ -153,14 +155,14 @@ db.catalog.update({
 ### Atualiza campo da categoria
 
 db.catalog.update({
-    "owner":"321"
+    "owner":"123"
 },{
     "$set":{
         "catalog.$[e1].category_title": "GAMES"
     }
 },{
     arrayFilters: [
-        { "e1.category_title": "Games2" }
+        { "e1.category_title": "Games" }
     ]
 })
 
