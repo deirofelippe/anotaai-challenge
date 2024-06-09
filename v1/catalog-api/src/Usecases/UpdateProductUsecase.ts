@@ -6,14 +6,16 @@ import {
 import { ErrorMessages } from '../types';
 import { OwnerRepository } from '../Repositories/OwnerRepository';
 import { UpdateProductValidator } from '../Validators/UpdateProductValidator';
-import { log } from '../Config/Logger';
+import { CategoryRepository } from '../Repositories/CategoryRepository';
 
 export type UpdateProductUsecaseInput = {
   owner: string;
+  product: string;
   category: string;
   fields: {
     title?: string;
     description?: string;
+    price?: number;
   };
 };
 
@@ -23,7 +25,8 @@ export type UpdateProductUsecaseOutput = {
 
 export type UpdateProductUsecaseConstructor = {
   ownerRepository: OwnerRepository;
-  categoryRepository: ProductRepository;
+  productRepository: ProductRepository;
+  categoryRepository: CategoryRepository;
   newRecordedDataQueue: NewRecordedDataQueue;
 };
 
@@ -35,8 +38,12 @@ export class UpdateProductUsecase {
   public async execute(
     input: UpdateProductUsecaseInput
   ): Promise<UpdateProductUsecaseOutput> {
-    const { categoryRepository, ownerRepository, newRecordedDataQueue } =
-      this.createProductUsecaseConstructor;
+    const {
+      categoryRepository,
+      ownerRepository,
+      newRecordedDataQueue,
+      productRepository
+    } = this.createProductUsecaseConstructor;
 
     const validator = new UpdateProductValidator();
     const { newData, errors } = validator.validate(input);
@@ -45,31 +52,42 @@ export class UpdateProductUsecase {
       return { errors: errors };
     }
 
-    const newProduct: UpdateProductRepositoryInput = {
+    const productToUpdate: UpdateProductRepositoryInput = {
       owner: newData!.owner,
       category: newData!.category,
+      product: newData!.product,
       fields: newData!.fields
     };
 
     const ownerFound = await ownerRepository.findOwner({
-      owner: newProduct.owner
+      owner: productToUpdate.owner
     });
 
     if (ownerFound.length <= 0) {
       return { errors: [{ message: 'Owner não existe' }] };
     }
 
-    const categoryFound = await categoryRepository.findProductByTitle({
-      owner: newProduct.owner,
-      title: newProduct.category
+    const categoryFound = await categoryRepository.findCategoryByTitle({
+      owner: productToUpdate.owner,
+      title: productToUpdate.category
     });
 
     if (categoryFound.length <= 0) {
       return { errors: [{ message: 'Categoria não existe' }] };
     }
 
-    await categoryRepository.updateProduct(newProduct);
-    await newRecordedDataQueue.sendMessage({ owner: newProduct.owner });
+    const productFound = await productRepository.findProductByTitle({
+      owner: productToUpdate.owner,
+      category: productToUpdate.category,
+      title: productToUpdate.product
+    });
+
+    if (productFound.length <= 0) {
+      return { errors: [{ message: 'Produto não existe' }] };
+    }
+
+    await productRepository.updateProduct(productToUpdate);
+    await newRecordedDataQueue.sendMessage({ owner: productToUpdate.owner });
 
     return { errors: [] };
   }
