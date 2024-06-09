@@ -2,6 +2,9 @@ import { Document, UpdateFilter } from 'mongodb';
 import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 import { Product } from '../Usecases/CreateProductUsecase';
 import { DeleteProductUsecaseInput } from '../Usecases/DeleteProductUsecase';
+import { UpdateProductUsecaseInput } from '../Usecases/UpdateProductUsecase';
+
+export type UpdateProductRepositoryInput = UpdateProductUsecaseInput;
 
 export class ProductRepository {
   public async createProduct(input: Product) {
@@ -31,7 +34,7 @@ export class ProductRepository {
     }
   }
 
-  public async updateCategory(input: UpdateProductRepositoryInput) {
+  public async updateProduct(input: UpdateProductRepositoryInput) {
     const db = MongoDBSingleton.getInstance();
 
     const updateFilter: UpdateFilter<Document> = {
@@ -53,7 +56,7 @@ export class ProductRepository {
     if (input.fields.price) {
       updateFilter.$set = {
         ...updateFilter.$set,
-        'catalog.$[e1].itens.$[e2].price': input.fields.description
+        'catalog.$[e1].itens.$[e2].price': input.fields.price
       };
     }
 
@@ -66,7 +69,9 @@ export class ProductRepository {
         {
           arrayFilters: [
             {
-              'e1.category_title': input.category,
+              'e1.category_title': input.category
+            },
+            {
               'e2.title': input.product
             }
           ]
