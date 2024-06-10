@@ -9,8 +9,10 @@ export class NewRecordedDataQueue {
     try {
       await publisher.send(
         {
+          contentType: 'application/json',
           exchange: 'catalog',
           routingKey: 'catalog.change.teste',
+          messageId: 'owner-' + input.owner,
           durable: true
         },
         input
