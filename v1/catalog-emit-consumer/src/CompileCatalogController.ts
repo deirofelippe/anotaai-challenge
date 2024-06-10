@@ -47,41 +47,24 @@ export class CompileCatalogController {
   public async execute(
     input: CompileCatalogControllerInput
   ): Promise<CompileCatalogControllerOutput> {
-    await sleep(2500);
+    await sleep(500);
+
     try {
       const owner = input.body.owner;
 
       const db = MongoInstance.getInstance();
 
-      const categories = await db
+      const catalog = await db
         .collection<Category>('catalog')
         .find({ owner: owner })
         .project<Category>({
           _id: 0,
           owner: 1,
-          category_title: 1,
-          category_description: 1
+          catalog: 1
         })
         .toArray();
 
-      const initialCatalog: Catalog = {
-        owner,
-        catalog: []
-      };
-
-      const catalog = categories.reduce((catalogAcc: Catalog, category) => {
-        catalogAcc.catalog.push({
-          category_title: category.category_title,
-          category_description: category.category_description,
-          itens: []
-        });
-
-        return catalogAcc;
-      }, initialCatalog);
-
-      console.log();
       console.log('compilando o json do owner: ' + owner + '...');
-      // console.log('json compilado: ', JSON.stringify(catalog));
 
       const command = new PutObjectCommand({
         Bucket: 'catalog-bucket',
