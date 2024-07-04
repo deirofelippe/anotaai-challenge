@@ -7,6 +7,7 @@ services:
     build:
       context: ./catalog-api
       dockerfile: Dockerfile.app
+    # command: "sleep inf"
     ports:
       - 3000:3000
       - 9229:9229
@@ -26,6 +27,7 @@ services:
     build:
       context: ./catalog-emit-consumer
       dockerfile: Dockerfile.app
+    # command: "sleep inf"
     ports:
       - 3001:3000
       - 9239:9229
