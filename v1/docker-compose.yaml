@@ -50,7 +50,7 @@ services:
       - 15672:15672
     volumes:
       - ./.rabbitmq_data/:/var/lib/rabbitmq/
-      # - ./.rabbitmq_log/:/var/log/rabbitmq
+      - ./rabbitmq_enabled_plugins:/etc/rabbitmq/enabled_plugins
     networks:
       - challenge
 
