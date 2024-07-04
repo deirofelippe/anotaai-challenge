@@ -10,12 +10,6 @@ cd "$ROOT_PATH"
 echo "Iniciando containers..."
 docker compose -f ./docker-compose.yaml up -d
 
-echo "Executando producer..."
-docker compose exec producer npm run dev &
-
-echo "Executando consumer..."
-docker compose exec consumer npm run dev &
-
 cd terraform
 
 echo "Iniciando terraform..."
