@@ -1,17 +1,51 @@
 #
 
+obs (prometheus, grafana, loki, pyroscope, elastic apm)
+k6
+aws, secret manager/vault, 
+cicd 
+k8s
+database per service, api gateway, circuit breaker, rate limit, health check, retry jitter
+nginx
+swagger
+c4model
+docs
+
+- k6
+  - groups com cada tipo de requisicao
+  - cada group tem o fluxo -> cadastrar, login, buscar produto, comprar
+  - load test no browser
+  - usar docker, sem fzr build, usar browserify para transformar packages em arquivo unico
+- cypress
+  - custom commands
+  - retires
+  - boas praticas no site e sobre custom commands
+  - fixtures
+  - app actions
+- gh actions
+  - sonarqube
+  - cypress headless
+  - k6
+  - testes de unidade e de integracao
+  - seguranca
+- observabilidade
+- rabbitmq
+  - erro na msg, envia p dlx que vai enviar p dlq, se der erro mais 3x, 
+  envia pro parking lot, que é um banco de dados que guarda msg
+  - tirar msg duplicada
+
 performance e seguranca
-tests, k6, c4model, rabbitmq dlq idempotencia, sonarqube, act, observabilidade, k8s, terraform backend, microservices, swagger, apm influxdb
+c4model, rabbitmq dlq idempotencia, sonarqube, act, observabilidade, k8s, terraform backend, microservices, swagger, apm influxdb
 
 testcontainers, testes unitarios e de integracao, logs, mongodb catalogo na msm collection, eslint
 
-dead letter queue
 rabbitmq availability
 logs e alertas telegram
-observabilidade
-apm
+observabilidade (apm com elastic, grafana com influxdb, prometheus)
 error handling
 vault / secret manager
+k8s
+gh actions
 
 MS pra consistencia no banco
 banco pra cada MS
