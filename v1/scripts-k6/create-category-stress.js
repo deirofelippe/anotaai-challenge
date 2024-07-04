@@ -10,8 +10,17 @@ http.get(`http://example.com/posts/${id}`, {
 }); */
 
 export const options = {
-  vus: 10,
-  duration: "30s",
+  stages: [
+    { duration: "2m", target: 100 },
+    { duration: "5m", target: 100 },
+    { duration: "2m", target: 200 },
+    { duration: "5m", target: 200 },
+    { duration: "2m", target: 300 },
+    { duration: "5m", target: 300 },
+    { duration: "2m", target: 400 },
+    { duration: "5m", target: 400 },
+    { duration: "10m", target: 0 },
+  ],
   thresholds: {
     http_req_duration: ["p(95)<2000"], // 95% das requisições devem responder em até 2s
     http_req_failed: ["rate<0.01"], // 1% das requisições podem falhar

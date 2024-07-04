@@ -3,7 +3,7 @@
 obs (prometheus, grafana, loki, pyroscope, elastic apm)
 k6
 aws, secret manager/vault, 
-cicd 
+cicd (eslint, sonarqube, testes, cypress)
 k8s
 database per service, api gateway, circuit breaker, rate limit, health check, retry jitter
 nginx
