@@ -7,6 +7,9 @@ ROOT_PATH=$(pwd)
 
 cd "$ROOT_PATH"
 
+echo "Criando network..."
+docker network create --driver bridge challenge
+
 echo "Iniciando containers..."
 docker compose -f ./docker-compose.yaml up -d
 
@@ -21,4 +24,4 @@ terraform apply -auto-approve
 cd "$ROOT_PATH"/scripts-k6
 
 echo "Executando teste de carga..."
-./k6 run script.js
+make k6-run-bin
