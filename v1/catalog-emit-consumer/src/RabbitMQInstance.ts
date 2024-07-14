@@ -61,19 +61,39 @@ export class RabbitMQInstance {
     const rabbitmq = RabbitMQInstance.connection!;
 
     await rabbitmq.exchangeDeclare({
+      exchange: 'change-dlx',
+      type: 'direct',
+      durable: true,
+      autoDelete: false
+    });
+    await rabbitmq.queueDeclare({
+      queue: 'change-dlq',
+      arguments: { 'x-queue-type': 'classic' },
+      durable: true,
+      autoDelete: false
+    });
+    await rabbitmq.queueBind({
+      exchange: 'change-dlx',
+      queue: 'change-dlq',
+      routingKey: 'key-change-dlx'
+    });
+
+    await rabbitmq.exchangeDeclare({
       exchange: 'catalog',
       type: 'topic',
       durable: true,
       autoDelete: false
     });
-
     await rabbitmq.queueDeclare({
       queue: 'change',
-      arguments: { 'x-queue-type': 'classic' },
+      arguments: {
+        'x-queue-type': 'classic',
+        'x-dead-letter-exchange': 'change-dlx',
+        'x-dead-letter-routing-key': 'key-change-dlx'
+      },
       durable: true,
       autoDelete: false
     });
-
     await rabbitmq.queueBind({
       exchange: 'catalog',
       queue: 'change',
@@ -89,7 +109,16 @@ export class RabbitMQInstance {
 
     const props: ConsumerProps = {
       queue: 'change',
-      queueOptions: { queue: 'change', durable: true, autoDelete: false },
+      queueOptions: {
+        queue: 'change',
+        arguments: {
+          'x-queue-type': 'classic',
+          'x-dead-letter-exchange': 'change-dlx',
+          'x-dead-letter-routing-key': 'key-change-dlx'
+        },
+        durable: true,
+        autoDelete: false
+      },
       exchanges: [
         {
           exchange: 'catalog',
