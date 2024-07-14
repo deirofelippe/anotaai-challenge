@@ -95,7 +95,18 @@ export class RabbitMQSingleton {
       exchanges: [
         { exchange: 'catalog', type: 'topic', durable: true, autoDelete: false }
       ],
-      queues: [{ queue: 'change', durable: true, autoDelete: false }]
+      queues: [
+        {
+          queue: 'change',
+          arguments: {
+            'x-queue-type': 'classic',
+            'x-dead-letter-exchange': 'change-dlx',
+            'x-dead-letter-routing-key': 'key-change-dlx'
+          },
+          durable: true,
+          autoDelete: false
+        }
+      ]
     });
     RabbitMQSingleton.publisher = publisher;
   }
