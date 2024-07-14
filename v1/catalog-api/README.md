@@ -33,6 +33,10 @@ ci/cd: testes, k6, cypress, lint, ansible deploy, sonarqube
 - npm ci
 - npm run test
 
+## S3 Localstack
+
+- http://localhost:4566/catalog-bucket/owner-1.json
+
 ## Mongo Express
 
 - localhost:8081

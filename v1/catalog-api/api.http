@@ -15,8 +15,21 @@ Content-Type: application/json
 
 {
     "owner": "123",
-    "title": "Computadores1221",
+    "title": "Computadores",
     "description": "Peças"
+}
+
+###
+PATCH {{url}}/v1/categories HTTP/1.1
+Content-Type: application/json
+
+{
+    "owner": "123",
+    "category": "Teste",
+    "fields": {
+        "title": "Computadores",
+        "description": "Teste"
+    }
 }
 
 ###
@@ -25,11 +38,13 @@ Content-Type: application/json
 
 {
     "owner": "123",
-    "category": "Computador",
+    "category": "Computadores",
     "title": "RTX 3060",
     "description": "Peças",
     "price": 2000.00
 }
+
+
 
 
 ###
