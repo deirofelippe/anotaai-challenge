@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import {
-  CreateProductInput,
-  CreateProductOutput,
+  CreateProductUsecaseInput,
+  CreateProductUsecaseOutput,
   CreateProductUsecase
 } from '../Usecases/CreateProductUsecase';
 
@@ -9,9 +9,9 @@ export class CreateProductController {
   constructor(private createProductUsecase: CreateProductUsecase) {}
 
   public async execute(req: Request, res: Response) {
-    const body = req.body as CreateProductInput;
+    const body = req.body as CreateProductUsecaseInput;
 
-    let result: CreateProductOutput;
+    let result: CreateProductUsecaseOutput;
     try {
       result = await this.createProductUsecase.execute({
         owner: body.owner,
