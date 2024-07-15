@@ -3,11 +3,16 @@ import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { OwnerRepository } from '../Repositories/OwnerRepository';
 import { ProductRepository } from '../Repositories/ProductRepository';
 import { DeleteProductValidator } from '../Validators/DeleteProductValidator';
+import { ErrorMessages } from '../types';
 
 export type DeleteProductUsecaseInput = {
   product: string;
   category: string;
   owner: string;
+};
+
+export type DeleteProductUsecaseOutput = {
+  errors: ErrorMessages['errors'];
 };
 
 export type DeleteProductUsecaseConstructor = {
@@ -22,7 +27,9 @@ export class DeleteProductUsecase {
     private deleteProductUsecaseConstructor: DeleteProductUsecaseConstructor
   ) {}
 
-  public async execute(input: DeleteProductUsecaseInput): Promise<any> {
+  public async execute(
+    input: DeleteProductUsecaseInput
+  ): Promise<DeleteProductUsecaseOutput> {
     const {
       productRepository,
       categoryRepository,
