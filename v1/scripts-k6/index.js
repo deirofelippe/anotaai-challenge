@@ -6,19 +6,17 @@ import faker from "k6/x/faker";
 import http from "k6/http";
 import { sleep, check } from "k6";
 
+import { URL } from "./libs/url.js";
+
 export const options = {
-  stages: [
-    { duration: "1s", target: 25 },
-    { duration: "1s", target: 25 },
-    { duration: "1s", target: 0 },
-  ],
+  stages: [{ duration: "1s", target: 2 }],
   thresholds: {
     http_req_duration: ["p(95) < 2000"], // 95% das requisições devem responder em até 2s
     http_req_failed: ["rate < 0.01"], // 1% das requisições podem falhar
   },
 };
 
-const url = "http://localhost:3000";
+const baseUrl = "http://localhost:3000";
 
 const metricStatusCode200 = new Counter("status_code_200");
 const metricStatusCode201 = new Counter("status_code_201");
@@ -78,6 +76,7 @@ export default function () {
     category: category.title,
   });
   let updatedCategoryTitle = "";
+  let updatedProductTitle = "";
 
   group("1. Create new category", () => {
     const payload = JSON.stringify(category);
@@ -86,7 +85,7 @@ export default function () {
       "Content-Type": "application/json",
     };
 
-    const res = http.post(`${url}/v1/categories`, payload, {
+    const res = http.post(`${baseUrl}/v1/categories`, payload, {
       headers,
     });
 
@@ -106,7 +105,7 @@ export default function () {
       "Content-Type": "application/json",
     };
 
-    const res = http.post(`${url}/v1/products`, payload, {
+    const res = http.post(`${baseUrl}/v1/products`, payload, {
       headers,
     });
 
@@ -124,7 +123,6 @@ export default function () {
 
     const payload = JSON.stringify({
       owner: category.owner,
-      category: category.title,
       fields: {
         title: updatedCategoryTitle,
         description: category.description + " Atualizado",
@@ -135,7 +133,9 @@ export default function () {
       "Content-Type": "application/json",
     };
 
-    const res = http.patch(`${url}/v1/categories`, payload, {
+    const url = new URL(`${baseUrl}/v1/categories/${category.title}`);
+
+    const res = http.patch(url.toString(), payload, {
       headers,
     });
 
@@ -149,12 +149,14 @@ export default function () {
   });
 
   group("4. Update product", () => {
+    updatedProductTitle = product.title + " Atualizado";
+
     const payload = JSON.stringify({
       owner: category.owner,
       category: updatedCategoryTitle,
       product: product.title,
       fields: {
-        title: product.title + " Atualizado",
+        title: updatedProductTitle,
         description: product.description + " Atualizado",
         price: faker.number.float32Range(50, 5000).toFixed(2),
       },
@@ -164,7 +166,9 @@ export default function () {
       "Content-Type": "application/json",
     };
 
-    const res = http.patch(`${url}/v1/products`, payload, {
+    const url = new URL(`${baseUrl}/v1/products/${product.title}`);
+
+    const res = http.patch(url.toString(), payload, {
       headers,
     });
 
@@ -176,12 +180,4 @@ export default function () {
 
     sleep(1);
   });
-
-  // group("5. Delete category", () => {
-  //   CreateCategory();
-  // });
-
-  // group("6. Delete product", () => {
-  //   CreateCategory();
-  // });
 }
