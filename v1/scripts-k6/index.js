@@ -197,4 +197,20 @@ export default function () {
 
     sleep(1);
   });
+
+  group("6. Delete category", () => {
+    const url = new URL(`${baseUrl}/v1/categories`);
+    url.searchParams.append("title", updatedCategoryTitle);
+    url.searchParams.append("owner", category.owner);
+
+    const res = http.del(url.toString());
+
+    check(res, {
+      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
+    });
+
+    addMetricsStatusCode(res.status);
+
+    sleep(1);
+  });
 }
