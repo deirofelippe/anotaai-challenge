@@ -6,6 +6,8 @@ import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
 import { UpdateCategoryUsecase } from '../Usecases/UpdateCategoryUsecase';
 import { UpdateCategoryController } from '../Controllers/UpdateCategoryController';
+import { DeleteCategoryController } from '../Controllers/DeleteCategoryController';
+import { DeleteCategoryUsecase } from '../Usecases/DeleteCategoryUsecase';
 
 const router = express.Router();
 
@@ -31,6 +33,18 @@ const updateCategoryController = new UpdateCategoryController(
 router.patch(
   '/v1/categories',
   updateCategoryController.execute.bind(updateCategoryController)
+);
+
+const deleteCategoryController = new DeleteCategoryController(
+  new DeleteCategoryUsecase({
+    ownerRepository: new OwnerRepository(),
+    categoryRepository: new CategoryRepository(),
+    newRecordedDataQueue: new NewRecordedDataQueue()
+  })
+);
+router.delete(
+  '/v1/categories',
+  deleteCategoryController.execute.bind(deleteCategoryController)
 );
 
 const categoryRoutes = router;
