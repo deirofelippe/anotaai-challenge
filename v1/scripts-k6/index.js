@@ -180,4 +180,21 @@ export default function () {
 
     sleep(1);
   });
+
+  group("5. Delete product", () => {
+    const url = new URL(`${baseUrl}/v1/products`);
+    url.searchParams.append("title", updatedProductTitle);
+    url.searchParams.append("category", updatedCategoryTitle);
+    url.searchParams.append("owner", category.owner);
+
+    const res = http.del(url.toString());
+
+    check(res, {
+      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
+    });
+
+    addMetricsStatusCode(res.status);
+
+    sleep(1);
+  });
 }
