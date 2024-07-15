@@ -8,6 +8,12 @@ import { sleep, check } from "k6";
 
 import { URL } from "./libs/url.js";
 
+/*
+rampup, metrics, refactor, foreach create product, scenario
+
+https://k6.io/blog/learning-js-through-load-testing/
+*/
+
 export const options = {
   stages: [{ duration: "1s", target: 2 }],
   thresholds: {
