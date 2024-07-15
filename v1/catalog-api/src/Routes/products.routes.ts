@@ -5,6 +5,8 @@ import { OwnerRepository } from '../Repositories/OwnerRepository';
 import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { ProductRepository } from '../Repositories/ProductRepository';
 import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
+import { UpdateProductController } from '../Controllers/UpdateProductController';
+import { UpdateProductUsecase } from '../Usecases/UpdateProductUsecase';
 
 const router = express.Router();
 
@@ -21,20 +23,18 @@ router.post(
   createProductController.execute.bind(createProductController)
 );
 
-//recebe um titulo, busca o titulo, se existir, deleta, senao
-//recebe como query owner=123&category=BlaBla
-// const deleteProductController = new DeleteProductController(
-//   new DeleteProductUsecase({
-//     ownerRepository: new OwnerRepository(),
-//     categoryRepository: new CategoryRepository(),
-//     productRepository: new ProductRepository(),
-//     newRecordedDataQueue: new NewRecordedDataQueue()
-//   })
-// );
-// router.delete(
-//   '/v1/products/:title',
-//   deleteProductController.execute.bind(deleteProductController)
-// );
+const updateProductController = new UpdateProductController(
+  new UpdateProductUsecase({
+    ownerRepository: new OwnerRepository(),
+    categoryRepository: new CategoryRepository(),
+    productRepository: new ProductRepository(),
+    newRecordedDataQueue: new NewRecordedDataQueue()
+  })
+);
+router.patch(
+  '/v1/products',
+  updateProductController.execute.bind(updateProductController)
+);
 
 const productRoutes = router;
 
