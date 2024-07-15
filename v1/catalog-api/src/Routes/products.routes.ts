@@ -32,7 +32,7 @@ const updateProductController = new UpdateProductController(
   })
 );
 router.patch(
-  '/v1/products',
+  '/v1/products/:title',
   updateProductController.execute.bind(updateProductController)
 );
 
