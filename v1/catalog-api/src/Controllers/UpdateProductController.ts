@@ -16,7 +16,7 @@ export class UpdateProductController {
       result = await this.createProductUsecase.execute({
         owner: body.owner,
         category: body.category,
-        product: body.product,
+        product: req.params.title,
         fields: body.fields
       });
     } catch (error) {
