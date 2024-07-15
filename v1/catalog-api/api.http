@@ -25,7 +25,7 @@ Content-Type: application/json
 
 {
     "owner": "123",
-    "category": "Teste",
+    "category": "Computadores",
     "fields": {
         "title": "Computadores",
         "description": "Teste"
@@ -44,8 +44,20 @@ Content-Type: application/json
     "price": 2000.00
 }
 
+###
+PATCH {{url}}/v1/products HTTP/1.1
+Content-Type: application/json
 
-
+{
+    "owner": "123",
+    "category": "Computadores",
+    "product": "RTX 3060 Atualizado",
+    "fields": {
+        "title": "RTX 3060 Atualizado",
+        "description": "Peças Atualizado",
+        "price": 1500
+    }
+}
 
 ###
 GET {{url}}/v1/owners/1/categories HTTP/1.1
