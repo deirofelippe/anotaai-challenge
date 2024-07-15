@@ -8,8 +8,8 @@ import { sleep, check } from "k6";
 
 export const options = {
   stages: [
-    { duration: "2s", target: 25 },
-    { duration: "2s", target: 25 },
+    { duration: "1s", target: 25 },
+    { duration: "1s", target: 25 },
     { duration: "1s", target: 0 },
   ],
   thresholds: {
@@ -18,11 +18,13 @@ export const options = {
   },
 };
 
+const url = "http://localhost:3000";
+
 const metricStatusCode200 = new Counter("status_code_200");
 const metricStatusCode201 = new Counter("status_code_201");
 const metricStatusCode204 = new Counter("status_code_204");
-const metricStatusCode422 = new Counter("status_code_500");
-const metricStatusCode500 = new Counter("status_code_422");
+const metricStatusCode422 = new Counter("status_code_422");
+const metricStatusCode500 = new Counter("status_code_500");
 
 function addMetricsStatusCode(statusCode) {
   switch (statusCode) {
@@ -75,6 +77,7 @@ export default function () {
     owner: category.owner,
     category: category.title,
   });
+  let updatedCategoryTitle = "";
 
   group("1. Create new category", () => {
     const payload = JSON.stringify(category);
@@ -83,7 +86,7 @@ export default function () {
       "Content-Type": "application/json",
     };
 
-    const res = http.post("http://localhost:3000/v1/categories", payload, {
+    const res = http.post(`${url}/v1/categories`, payload, {
       headers,
     });
 
@@ -103,7 +106,7 @@ export default function () {
       "Content-Type": "application/json",
     };
 
-    const res = http.post("http://localhost:3000/v1/products", payload, {
+    const res = http.post(`${url}/v1/products`, payload, {
       headers,
     });
 
@@ -117,11 +120,13 @@ export default function () {
   });
 
   group("3. Update category", () => {
+    updatedCategoryTitle = category.title + " Atualizado";
+
     const payload = JSON.stringify({
       owner: category.owner,
       category: category.title,
       fields: {
-        title: category.title + " Atualizado",
+        title: updatedCategoryTitle,
         description: category.description + " Atualizado",
       },
     });
@@ -130,7 +135,7 @@ export default function () {
       "Content-Type": "application/json",
     };
 
-    const res = http.patch("http://localhost:3000/v1/categories", payload, {
+    const res = http.patch(`${url}/v1/categories`, payload, {
       headers,
     });
 
@@ -143,9 +148,34 @@ export default function () {
     sleep(1);
   });
 
-  // group("4. Update product", () => {
-  //   CreateCategory();
-  // });
+  group("4. Update product", () => {
+    const payload = JSON.stringify({
+      owner: category.owner,
+      category: updatedCategoryTitle,
+      product: product.title,
+      fields: {
+        title: product.title + " Atualizado",
+        description: product.description + " Atualizado",
+        price: faker.number.float32Range(50, 5000).toFixed(2),
+      },
+    });
+
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    const res = http.patch(`${url}/v1/products`, payload, {
+      headers,
+    });
+
+    check(res, {
+      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
+    });
+
+    addMetricsStatusCode(res.status);
+
+    sleep(1);
+  });
 
   // group("5. Delete category", () => {
   //   CreateCategory();
