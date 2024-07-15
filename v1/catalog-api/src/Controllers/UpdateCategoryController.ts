@@ -15,7 +15,7 @@ export class UpdateCategoryController {
     try {
       result = await this.createCategoryUsecase.execute({
         owner: body.owner,
-        category: body.category,
+        category: req.params.title as string,
         fields: body.fields
       });
     } catch (error) {

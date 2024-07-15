@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import {
-  DeleteCategoryUsecaseInput,
   DeleteCategoryUsecaseOutput,
   DeleteCategoryUsecase
 } from '../Usecases/DeleteCategoryUsecase';
