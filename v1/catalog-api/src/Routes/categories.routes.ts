@@ -31,7 +31,7 @@ const updateCategoryController = new UpdateCategoryController(
   })
 );
 router.patch(
-  '/v1/categories',
+  '/v1/categories/:title',
   updateCategoryController.execute.bind(updateCategoryController)
 );
 
