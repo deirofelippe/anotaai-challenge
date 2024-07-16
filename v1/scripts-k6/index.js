@@ -1,12 +1,18 @@
 import { group } from "k6";
-import exec from "k6/execution";
-import { Counter } from "k6/metrics";
 
 import faker from "k6/x/faker";
 import http from "k6/http";
 import { sleep, check } from "k6";
 
+import optionsLoadTest from "./options-load.json";
+import optionsSmokeTest from "./options-smoke.json";
+import optionsSpikeTest from "./options-spike.json";
+import optionsStressTest from "./options-stress.json";
+
+import { CreateCategory } from "./requests/create-category.js";
+
 import { URL } from "./libs/url.js";
+import { CreateProduct } from "./requests/create-product";
 
 /*
 rampup, metrics, refactor, foreach create product, scenario
@@ -14,44 +20,7 @@ rampup, metrics, refactor, foreach create product, scenario
 https://k6.io/blog/learning-js-through-load-testing/
 */
 
-export const options = {
-  stages: [{ duration: "1s", target: 2 }],
-  thresholds: {
-    http_req_duration: ["p(95) < 2000"], // 95% das requisições devem responder em até 2s
-    http_req_failed: ["rate < 0.01"], // 1% das requisições podem falhar
-  },
-};
-
-const baseUrl = "http://localhost:3000";
-
-const metricStatusCode200 = new Counter("status_code_200");
-const metricStatusCode201 = new Counter("status_code_201");
-const metricStatusCode204 = new Counter("status_code_204");
-const metricStatusCode422 = new Counter("status_code_422");
-const metricStatusCode500 = new Counter("status_code_500");
-
-function addMetricsStatusCode(statusCode) {
-  switch (statusCode) {
-    case 200:
-      metricStatusCode200.add(1);
-      break;
-    case 201:
-      metricStatusCode201.add(1);
-      break;
-    case 204:
-      metricStatusCode204.add(1);
-      break;
-    case 422:
-      metricStatusCode422.add(1);
-      break;
-    case 500:
-      metricStatusCode500.add(1);
-      break;
-
-    default:
-      break;
-  }
-}
+export const options = optionsSmokeTest;
 
 function generateCategory() {
   const category = {
@@ -63,10 +32,10 @@ function generateCategory() {
   return category;
 }
 
-function generateProduct(catalog) {
+function generateProduct(category) {
   const product = {
-    owner: catalog.owner,
-    category: catalog.category,
+    owner: category.owner,
+    category: category.title,
     title: faker.product.productName(),
     description: faker.product.productDescription(),
     price: faker.number.float32Range(50, 5000).toFixed(2),
@@ -79,48 +48,19 @@ export default function () {
   const category = generateCategory();
   const product = generateProduct({
     owner: category.owner,
-    category: category.title,
+    title: category.title,
   });
+
   let updatedCategoryTitle = "";
   let updatedProductTitle = "";
 
   group("1. Create new category", () => {
-    const payload = JSON.stringify(category);
-
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    const res = http.post(`${baseUrl}/v1/categories`, payload, {
-      headers,
-    });
-
-    check(res, {
-      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
-    });
-
-    addMetricsStatusCode(res.status);
-
+    CreateCategory(category);
     sleep(1);
   });
 
   group("2. Create new product", () => {
-    const payload = JSON.stringify(product);
-
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    const res = http.post(`${baseUrl}/v1/products`, payload, {
-      headers,
-    });
-
-    check(res, {
-      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
-    });
-
-    addMetricsStatusCode(res.status);
-
+    CreateProduct(product);
     sleep(1);
   });
 
