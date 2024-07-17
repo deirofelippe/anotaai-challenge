@@ -1,18 +1,18 @@
 import { group } from "k6";
-
 import faker from "k6/x/faker";
-import http from "k6/http";
-import { sleep, check } from "k6";
+import { sleep } from "k6";
 
-import optionsLoadTest from "./options-load.json";
-import optionsSmokeTest from "./options-smoke.json";
-import optionsSpikeTest from "./options-spike.json";
-import optionsStressTest from "./options-stress.json";
+import optionsLoadTest from "./options-load.js";
+import optionsSmokeTest from "./options-smoke.js";
+import optionsSpikeTest from "./options-spike.js";
+import optionsStressTest from "./options-stress.js";
 
 import { CreateCategory } from "./requests/create-category.js";
-
-import { URL } from "./libs/url.js";
-import { CreateProduct } from "./requests/create-product";
+import { CreateProduct } from "./requests/create-product.js";
+import { DeleteProduct } from "./requests/delete-product.js";
+import { DeleteCategory } from "./requests/delete-category.js";
+import { UpdateProduct } from "./requests/update-product.js";
+import { UpdateCategory } from "./requests/update-category.js";
 
 /*
 rampup, metrics, refactor, foreach create product, scenario
@@ -20,7 +20,7 @@ rampup, metrics, refactor, foreach create product, scenario
 https://k6.io/blog/learning-js-through-load-testing/
 */
 
-export const options = optionsSmokeTest;
+export const options = optionsSpikeTest;
 
 function generateCategory() {
   const category = {
@@ -51,8 +51,8 @@ export default function () {
     title: category.title,
   });
 
-  let updatedCategoryTitle = "";
-  let updatedProductTitle = "";
+  const updatedCategoryTitle = category.title + " Atualizado";
+  const updatedProductTitle = product.title + " Atualizado";
 
   group("1. Create new category", () => {
     CreateCategory(category);
@@ -65,98 +65,34 @@ export default function () {
   });
 
   group("3. Update category", () => {
-    updatedCategoryTitle = category.title + " Atualizado";
-
-    const payload = JSON.stringify({
-      owner: category.owner,
-      fields: {
-        title: updatedCategoryTitle,
-        description: category.description + " Atualizado",
-      },
-    });
-
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    const url = new URL(`${baseUrl}/v1/categories/${category.title}`);
-
-    const res = http.patch(url.toString(), payload, {
-      headers,
-    });
-
-    check(res, {
-      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
-    });
-
-    addMetricsStatusCode(res.status);
-
+    UpdateCategory(category, updatedCategoryTitle);
     sleep(1);
   });
 
   group("4. Update product", () => {
-    updatedProductTitle = product.title + " Atualizado";
-
-    const payload = JSON.stringify({
-      owner: category.owner,
-      category: updatedCategoryTitle,
-      product: product.title,
-      fields: {
-        title: updatedProductTitle,
-        description: product.description + " Atualizado",
-        price: faker.number.float32Range(50, 5000).toFixed(2),
-      },
+    UpdateProduct({
+      category,
+      updatedCategoryTitle,
+      product,
+      updatedProductTitle,
     });
-
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    const url = new URL(`${baseUrl}/v1/products/${product.title}`);
-
-    const res = http.patch(url.toString(), payload, {
-      headers,
-    });
-
-    check(res, {
-      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
-    });
-
-    addMetricsStatusCode(res.status);
-
     sleep(1);
   });
 
   group("5. Delete product", () => {
-    const url = new URL(`${baseUrl}/v1/products`);
-    url.searchParams.append("title", updatedProductTitle);
-    url.searchParams.append("category", updatedCategoryTitle);
-    url.searchParams.append("owner", category.owner);
-
-    const res = http.del(url.toString());
-
-    check(res, {
-      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
+    DeleteProduct({
+      category,
+      updatedCategoryTitle,
+      updatedProductTitle,
     });
-
-    addMetricsStatusCode(res.status);
-
     sleep(1);
   });
 
   group("6. Delete category", () => {
-    const url = new URL(`${baseUrl}/v1/categories`);
-    url.searchParams.append("title", updatedCategoryTitle);
-    url.searchParams.append("owner", category.owner);
-
-    const res = http.del(url.toString());
-
-    check(res, {
-      "is status code 2xx": (r) => `${r.status}`.startsWith("2"),
+    DeleteCategory({
+      category,
+      updatedCategoryTitle,
     });
-
-    addMetricsStatusCode(res.status);
-
     sleep(1);
   });
 }
