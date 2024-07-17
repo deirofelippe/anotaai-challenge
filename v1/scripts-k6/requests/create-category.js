@@ -1,5 +1,7 @@
-import { addMetricsStatusCode } from "../metrics/add-metrics-status-code";
-import { baseUrl } from "../variables.json";
+import { addMetricsStatusCode } from "../metrics/add-metrics-status-code.js";
+import env from "../variables.js";
+import http from "k6/http";
+import { check } from "k6";
 
 export function CreateCategory(category) {
   const payload = JSON.stringify(category);
@@ -8,7 +10,7 @@ export function CreateCategory(category) {
     "Content-Type": "application/json",
   };
 
-  const res = http.post(`${baseUrl}/v1/categories`, payload, {
+  const res = http.post(`${env.baseUrl}/v1/categories`, payload, {
     headers,
   });
 
