@@ -1,7 +1,11 @@
 export default {
   stages: [
-    { duration: "10s", target: 300 },
-    { duration: "30s", target: 300 },
+    { duration: "5s", target: 100 },
+    { duration: "5s", target: 100 },
+    { duration: "7s", target: 300 },
+    { duration: "7s", target: 300 },
+    { duration: "5s", target: 500 },
+    { duration: "10s", target: 500 },
     { duration: "10s", target: 0 },
   ],
   thresholds: {

@@ -14,13 +14,7 @@ import { DeleteCategory } from "./requests/delete-category.js";
 import { UpdateProduct } from "./requests/update-product.js";
 import { UpdateCategory } from "./requests/update-category.js";
 
-/*
-rampup, metrics, refactor, foreach create product, scenario
-
-https://k6.io/blog/learning-js-through-load-testing/
-*/
-
-export const options = optionsSpikeTest;
+export const options = optionsStressTest;
 
 function generateCategory() {
   const category = {
