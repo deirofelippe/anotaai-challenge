@@ -1,7 +1,8 @@
 #
 
+obs
+  servicos, rabbitmq, database, docker, k8s
 obs (prometheus, grafana, loki, pyroscope, elastic apm)
-k6
 aws, secret manager/vault, 
 cicd (eslint, sonarqube, testes, cypress)
 k8s
