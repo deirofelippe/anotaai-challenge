@@ -1,17 +1,19 @@
 version: "3.8"
 
 networks:
-  challenge:
+  desafio:
     driver: bridge
     external: true
 
 services:
   producer:
-    container_name: producer
     image: deirofelippe/producer-anotaai-challenge:v1
     build:
       context: ./catalog-api
       dockerfile: Dockerfile.app
+    container_name: producer
+    labels:
+      - group=main
     # command: "sleep inf"
     ports:
       - 3000:3000
@@ -19,7 +21,7 @@ services:
     volumes:
       - "./catalog-api:/home/node/app"
     networks:
-      - challenge
+      - desafio
     deploy:
       resources:
         limits:
@@ -27,11 +29,13 @@ services:
           memory: 512M
 
   consumer:
-    container_name: consumer
     image: deirofelippe/consumer-anotaai-challenge:v1
     build:
       context: ./catalog-emit-consumer
       dockerfile: Dockerfile.app
+    container_name: consumer
+    labels:
+      - group=main
     # command: "sleep inf"
     ports:
       - 3001:3000
@@ -39,7 +43,7 @@ services:
     volumes:
       - "./catalog-emit-consumer:/home/node/app"
     networks:
-      - challenge
+      - desafio
     deploy:
       resources:
         limits:
@@ -47,19 +51,22 @@ services:
           memory: 512M
 
   rabbitmq:
-    image: rabbitmq:3.9.29-management-alpine
+    image: rabbitmq:3.9.29-management
     container_name: rabbitmq
+    labels:
+      - group=main
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=password
     ports:
       - 5672:5672
       - 15672:15672
+      - 15692:15692
     volumes:
-      - ./.rabbitmq_data/:/var/lib/rabbitmq/
+      # - ./.rabbitmq_data/:/var/lib/rabbitmq/
       - ./rabbitmq_enabled_plugins:/etc/rabbitmq/enabled_plugins
     networks:
-      - challenge
+      - desafio
 
   # redis:
   #   image: redis:6.2.14-alpine3.19
@@ -70,40 +77,46 @@ services:
   #   volumes:
   #     - ./.redis_data:/data
   #   networks:
-  #     - challenge
+  #     - desafio
 
   localstack:
-    container_name: localstack
     image: localstack/localstack:3.1.0
+    container_name: localstack
+    labels:
+      - group=main
     ports:
       - "4566:4566"
       - "4510-4559:4510-4559"
     environment:
       - DEBUG=0
       - AWS_DEFAULT_REGION=sa-east-1
-    volumes:
-      - "./.localstack_data:/var/lib/localstack"
+    # volumes:
+    #   - "./.localstack_data:/var/lib/localstack"
     networks:
-      - challenge
+      - desafio
 
   mongodb:
     image: mongo:6.0.13-jammy
-    restart: always
     container_name: mongodb
+    labels:
+      - group=main
+    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongodb
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:
       - "27017:27017"
-    volumes:
-      - ./.mongo_data:/data/db
+    # volumes:
+    #   - ./.mongo_data:/data/db
     networks:
-      - challenge
+      - desafio
 
   mongo-express:
     image: mongo-express:1.0.2-20-alpine3.18
-    restart: always
     container_name: mongo-express
+    labels:
+      - group=main
+    restart: always
     ports:
       - "8081:8081"
     environment:
@@ -113,28 +126,4 @@ services:
     depends_on:
       - mongodb
     networks:
-      - challenge
-
-  influxdb:
-    image: influxdb:1.8
-    container_name: influxdb
-    networks:
-      - challenge
-    ports:
-      - "8086:8086"
-    environment:
-      - INFLUXDB_DB=k6
-
-  grafana:
-    image: grafana/grafana:9.3.8
-    container_name: grafana
-    networks:
-      - challenge
-    ports:
-      - "3005:3000"
-    environment:
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_BASIC_ENABLED=false
-    # volumes:
-    #   - ./grafana:/etc/grafana/provisioning/
+      - desafio
