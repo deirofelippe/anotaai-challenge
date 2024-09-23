@@ -1,83 +1,67 @@
 # Anotaai Challenge
 
-https://github.com/githubanotaai/new-test-backend-nodejs
+Repositório do teste: https://github.com/githubanotaai/new-test-backend-nodejs
 
-## User stories
+Exercicio feito para por em prática as ferramentas:
 
-- Criar produto junto com seu owner
-- Criar categoria junto com seu owner
-- Associar um produto a uma categoria por vez
-- Atualizar os dados do produto e da categoria
-- Produtos e categoria pertencem a somente um owner
-- Haverá multiplas requisições por segundo para editar produtos/categorias, e também busca por categoria
-- Se houver mudança no catalogo de produto (produto e categoria), deverá ser publicada essa mudança no tópico "catalog-emit" no SQS ou RabbitMQ
-- Consumidor que ouve as mudanças no catalogo para um owner especifico
-- Quando o consumer receber a mensagem, busca no banco pelo catalogo do owner, gera um catalogo em json, publica o json no S3
+- RabbitMQ
+- MongoDB
+- AWS S3 e Localstack
+- Prometheus e Grafana
+- K6 (Teste de Performance)
+- Act (Github Actions rodado localmente)
 
-- Product: title, description, price, category, owner ID
-- Category: title, description, owner ID
+Pretendo adicionar mais versões do mesmo sistema, mas implementado com outras tecnologias.
 
-## Ferramentas
+## Versões
 
-SNS SQS S3
-RabbitMQ
-MongoDB
-Docker
-K6
-Terraform
-Localstack
-Nginx
-Nodejs Typescript Express
+### V1
 
-Camadas
-Variáveis de ambiente
-Testes de unidade
-Logs
-Error handling
-Documentação (como executar, swagger, c4 model)
-Organização de código, separação de modulo, comentários,
-Histórico de commits
+- **Fila:** RabbitMQ
+- **Banco de dados:** MongoDB
+- **Backend:** Typescript, Express
+- **Armazenamento de arquivo:** AWS S3 e Localstack
+- **Observabilidade:** Prometheus e Grafana
+- **Teste de Performance:** K6
+- **CI/CD:** Act (Github Actions rodado localmente)
 
-- Stack
-    - teste de performance (k6)
-    - teste e2e (cypress)
-    - observabilidade (prometheus e grafana)
-    - kubernetes e docker
-    - ci/cd (jenkins)
-    - aws
-    - terraform
-    - ansible
-    - cache (redis)
-    - nao relacional (mongodb)
-    - relacional (postgresql)
-    - fila (rabbitmq, kafka)
-    - fulltext search (elasticsearch)
-        - microserviço e eda
-        - performance: cache, apm
-        - seguranca: owasp, osint, hardening
-        - resiliência: fila, plano B quando da erro
-        - alta disponibilidade: k8s
-        - escalabilidade: 
+### V2 (Não desenvolvido)
 
-- Zenvia Stack
-    - Nest
-    - Kafka
-    - Kubernetes
-    - Docker
-    - MongoDB
-    - MySQL
-    - Python Django
-    - Microserviço orientado a eventos
+- **Fila:** AWS SNS e SQS
+- **Banco de dados:** AWS DynamoDB
+- **Backend:** Python, Flask
+- **Armazenamento de arquivo:** AWS S3 e Localstack
+- **Observabilidade:** Prometheus e Grafana
+- **Teste de Performance:** K6
+- **CI/CD:** Act (Github Actions rodado localmente)
 
-- PicPay Stack
-    - PHP 8+
-    - Laravel, Lumen, Swoole + HyperF
-    - MySQL, MongoDB
-    - Docker
-    - TDD
-    - RabbitMQ
-    - Clean Code, SOLID, DRY
-    - OWASP
-    - Microserviço e escalabilidade horizontal
+## Checklist
 
-## Outros
+- [ ] Teste automatizado cobrir mais partes do código
+- [ ] Refatorar o código do producer e consumer
+- [ ] Criar alertas com prometheus para sistemas fora do ar
+- [ ] Um banco de dados para cada microserviço
+- [ ] Padroes: circuit breaker, saga, rate limit, eda, cqrs, event sourcing, database per service, load balancer, api gateway
+- [x] Arquitetura em Camadas
+- [ ] Variáveis de ambiente
+- [ ] Testes de unidade
+- [ ] Error handling
+- [ ] Documentação: desenho da arquitetura, justificar decisões, descrição de funcionalidades, descrever configurações para obter resiliência/alta disponibilidade/segurança/escalabilidade
+- [x] Histórico de commits
+- [ ] Boas práticas: SOLID, clean code, object calisthenics, design patterns
+- [ ] API Versioning
+- [ ] Observabilidade, 4 Golden Signals e Profiling (pyroscope)
+- [ ] Ferramentas de qualidade: analise estática de código
+    - [ ] Linter
+    - [ ] SonarQube
+- [ ] Cache (redis)
+- [ ] Segurança:
+    - [ ] OWSAP
+    - [ ] VPS (ssh, firewall)
+- [ ] Elasticsearch (Fulltext Searchj)
+- [ ] Banco de dados:
+    - [ ] Index
+    - [ ] Fulltext Serach
+    - [ ] Sharding
+    - [ ] Replication
+
