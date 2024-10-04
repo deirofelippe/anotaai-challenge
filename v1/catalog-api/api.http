@@ -16,7 +16,7 @@ Content-Type: application/json
 {
     "owner": "123",
     "title": "Computadores",
-    "description": "Peças"
+    "description": "Peças de computador"
 }
 
 ###
@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{url}}/v1/categories?title=Chrome Green Bike Atualizado&owner=15 HTTP/1.1
+DELETE {{url}}/v1/categories?title=Computadores&owner=123 HTTP/1.1
 
 ###
 POST {{url}}/v1/products HTTP/1.1
@@ -40,19 +40,18 @@ Content-Type: application/json
 {
     "owner": "123",
     "category": "Computadores",
-    "title": "RTX 3060",
+    "title": "RTX 4060",
     "description": "Peças",
     "price": 2000.00
 }
 
 ###
-PATCH {{url}}/v1/products HTTP/1.1
+PATCH {{url}}/v1/products/RTX%203060 HTTP/1.1
 Content-Type: application/json
 
 {
     "owner": "123",
     "category": "Computadores",
-    "product": "RTX 3060 Atualizado",
     "fields": {
         "title": "RTX 3060 Atualizado",
         "description": "Peças Atualizado",
@@ -61,7 +60,7 @@ Content-Type: application/json
 }
 
 ###
-DELETE {{url}}/v1/products?title=Chrome Green Bike Atualizado&category=Teste&owner=15 HTTP/1.1
+DELETE {{url}}/v1/products?title=RTX%203060%20Atualizado&category=Computadores&owner=123 HTTP/1.1
 
 ###
-GET {{url}}/v1/owners/1/categories HTTP/1.1
+GET {{url}}/v1/owners/123/categories HTTP/1.1

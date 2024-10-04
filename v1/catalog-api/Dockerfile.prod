@@ -15,4 +15,4 @@ COPY ./ ./
 
 USER node
 
-CMD ["/usr/local/bin/npm", "run", "dev"]
+CMD ["/usr/local/bin/npm", "start"]

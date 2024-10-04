@@ -10,16 +10,19 @@ services:
     image: deirofelippe/producer-anotaai-challenge:v1
     build:
       context: ./catalog-api
-      dockerfile: Dockerfile.app
+      dockerfile: Dockerfile.prod
     container_name: producer
     labels:
       - group=main
-    # command: "sleep inf"
+    command: "sleep inf"
     ports:
       - 3000:3000
       - 9229:9229
     volumes:
       - "./catalog-api:/home/node/app"
+    depends_on:
+      - rabbitmq
+      - mongodb
     networks:
       - desafio
     deploy:
