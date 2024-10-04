@@ -11,11 +11,11 @@
     "node": ">= 20.10.0"
   },
   "scripts": {
-    "dev": "NOVE_ENV=dev npx nodemon --config ./nodemon.json --exec 'node -r @swc-node/register src/server.ts'",
-    "start": "NOVE_ENV=production node build/server.js",
-    "test": "NOVE_ENV=test npx jest --runInBand -c ./jest.config.swc.js",
-    "test:debug:swc": "NOVE_ENV=test node --inspect-brk ./node_modules/.bin/jest -c ./jest.config.swc.js --runInBand __tests__",
-    "test:debug": "NOVE_ENV=test NODE_OPTIONS='--inspect' npx jest -c ./jest.config.tsjest.js --runInBand --coverage false __tests__",
+    "dev": "NODE_ENV=dev npx nodemon --config ./nodemon.json --exec 'node -r @swc-node/register src/server.ts'",
+    "start": "NODE_ENV=production node build/src/server.js",
+    "test": "NODE_ENV=test npx jest --runInBand -c ./jest.config.swc.js",
+    "test:debug:swc": "NODE_ENV=test node --inspect-brk ./node_modules/.bin/jest -c ./jest.config.swc.js --runInBand __tests__",
+    "test:debug": "NODE_ENV=test NODE_OPTIONS='--inspect' npx jest -c ./jest.config.tsjest.js --runInBand --coverage false __tests__",
     "build": "npx swc ./src -d ./build --config-file ./.swcrc",
     "lint": "npx eslint ./",
     "prepare": "husky"
