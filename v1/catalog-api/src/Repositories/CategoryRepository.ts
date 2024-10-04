@@ -1,8 +1,8 @@
 import { Document, UpdateFilter } from 'mongodb';
-import { log } from '../Config/Logger';
-import { MongoDBSingleton } from '../Config/MongoDBSingleton';
-import { Category } from '../Usecases/CreateCategoryUsecase';
-import { UpdateCategoryUsecaseInput } from '../Usecases/UpdateCategoryUsecase';
+import { log } from '../Config/Logger.js';
+import { MongoDBSingleton } from '../Config/MongoDBSingleton.js';
+import { Category } from '../Usecases/CreateCategoryUsecase.js';
+import { UpdateCategoryUsecaseInput } from '../Usecases/UpdateCategoryUsecase.js';
 
 export type UpdateCategoryRepositoryInput = UpdateCategoryUsecaseInput;
 

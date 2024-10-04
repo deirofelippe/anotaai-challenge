@@ -1,12 +1,12 @@
-import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
+import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue.js';
 import {
   ProductRepository,
   UpdateProductRepositoryInput
-} from '../Repositories/ProductRepository';
+} from '../Repositories/ProductRepository.js';
 import { ErrorMessages } from '../types';
-import { OwnerRepository } from '../Repositories/OwnerRepository';
-import { UpdateProductValidator } from '../Validators/UpdateProductValidator';
-import { CategoryRepository } from '../Repositories/CategoryRepository';
+import { OwnerRepository } from '../Repositories/OwnerRepository.js';
+import { UpdateProductValidator } from '../Validators/UpdateProductValidator.js';
+import { CategoryRepository } from '../Repositories/CategoryRepository.js';
 
 export type UpdateProductUsecaseInput = {
   owner: string;

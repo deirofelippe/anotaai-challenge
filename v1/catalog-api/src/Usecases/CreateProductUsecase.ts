@@ -1,9 +1,9 @@
-import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
-import { CreateProductValidator } from '../Validators/CreateProductValidator';
+import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue.js';
+import { CreateProductValidator } from '../Validators/CreateProductValidator.js';
 import { ErrorMessages } from '../types';
-import { ProductRepository } from '../Repositories/ProductRepository';
-import { CategoryRepository } from '../Repositories/CategoryRepository';
-import { OwnerRepository } from '../Repositories/OwnerRepository';
+import { ProductRepository } from '../Repositories/ProductRepository.js';
+import { CategoryRepository } from '../Repositories/CategoryRepository.js';
+import { OwnerRepository } from '../Repositories/OwnerRepository.js';
 
 export type Product = {
   owner: string;

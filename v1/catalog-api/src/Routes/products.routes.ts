@@ -1,14 +1,14 @@
 import express from 'express';
-import { CreateProductController } from '../Controllers/CreateProductController';
-import { CreateProductUsecase } from '../Usecases/CreateProductUsecase';
-import { OwnerRepository } from '../Repositories/OwnerRepository';
-import { CategoryRepository } from '../Repositories/CategoryRepository';
-import { ProductRepository } from '../Repositories/ProductRepository';
-import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
-import { UpdateProductController } from '../Controllers/UpdateProductController';
-import { UpdateProductUsecase } from '../Usecases/UpdateProductUsecase';
-import { DeleteProductController } from '../Controllers/DeleteProductController';
-import { DeleteProductUsecase } from '../Usecases/DeleteProductUsecase';
+import { CreateProductController } from '../Controllers/CreateProductController.js';
+import { CreateProductUsecase } from '../Usecases/CreateProductUsecase.js';
+import { OwnerRepository } from '../Repositories/OwnerRepository.js';
+import { CategoryRepository } from '../Repositories/CategoryRepository.js';
+import { ProductRepository } from '../Repositories/ProductRepository.js';
+import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue.js';
+import { UpdateProductController } from '../Controllers/UpdateProductController.js';
+import { UpdateProductUsecase } from '../Usecases/UpdateProductUsecase.js';
+import { DeleteProductController } from '../Controllers/DeleteProductController.js';
+import { DeleteProductUsecase } from '../Usecases/DeleteProductUsecase.js';
 
 const router = express.Router();
 

@@ -3,7 +3,7 @@ import {
   CreateProductUsecaseInput,
   CreateProductUsecaseOutput,
   CreateProductUsecase
-} from '../Usecases/CreateProductUsecase';
+} from '../Usecases/CreateProductUsecase.js';
 
 export class CreateProductController {
   constructor(private createProductUsecase: CreateProductUsecase) {}

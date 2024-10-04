@@ -1,10 +1,10 @@
 import express from 'express';
-import { errorHandling } from './errorHandling';
-import { indexRoutes } from './Routes/routes';
-import { categoryRoutes } from './Routes/categories.routes';
-import { productRoutes } from './Routes/products.routes';
-import { RabbitMQSingleton } from './Config/RabbitMQSingleton';
-import { MongoDBSingleton } from './Config/MongoDBSingleton';
+import { errorHandling } from './errorHandling.js';
+import { indexRoutes } from './Routes/routes.js';
+import { categoryRoutes } from './Routes/categories.routes.js';
+import { productRoutes } from './Routes/products.routes.js';
+import { RabbitMQSingleton } from './Config/RabbitMQSingleton.js';
+import { MongoDBSingleton } from './Config/MongoDBSingleton.js';
 
 const app = express();
 const port = 3000;

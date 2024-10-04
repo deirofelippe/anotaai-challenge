@@ -4,7 +4,7 @@ import {
   mongoPassword,
   mongoPort,
   mongoUser
-} from './env';
+} from './env.js';
 import { MongoClient } from 'mongodb';
 
 export class MongoDBSingleton {
