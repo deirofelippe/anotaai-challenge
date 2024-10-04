@@ -3,7 +3,7 @@ import {
   CreateCategoryUsecaseInput,
   CreateCategoryUsecaseOutput,
   CreateCategoryUsecase
-} from '../Usecases/CreateCategoryUsecase.js';
+} from '../Usecases/CreateCategoryUsecase';
 
 export class CreateCategoryController {
   constructor(private createCategoryUsecase: CreateCategoryUsecase) {}

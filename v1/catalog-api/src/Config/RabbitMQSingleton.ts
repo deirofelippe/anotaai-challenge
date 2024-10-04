@@ -1,9 +1,4 @@
-import {
-  rabbitUsername,
-  rabbitPassword,
-  rabbitHost,
-  rabbitPort
-} from './env.js';
+import { rabbitUsername, rabbitPassword, rabbitHost, rabbitPort } from './env';
 import { Connection, Consumer, Publisher } from 'rabbitmq-client';
 
 export class RabbitMQSingleton {

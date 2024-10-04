@@ -1,7 +1,7 @@
 import { ValidationError } from 'yup';
 import { ErrorMessages } from '../types';
-import { DeleteProductUsecaseInput } from '../Usecases/DeleteProductUsecase.js';
-import { deleteProductSchema } from './Schema/DeleteProductSchema.js';
+import { DeleteProductUsecaseInput } from '../Usecases/DeleteProductUsecase';
+import { deleteProductSchema } from './Schema/DeleteProductSchema';
 
 export type DeleteProductValidatorInput = DeleteProductUsecaseInput;
 

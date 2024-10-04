@@ -1,7 +1,7 @@
 import { ValidationError } from 'yup';
 import { ErrorMessages } from '../types';
-import { UpdateCategoryUsecaseInput } from '../Usecases/UpdateCategoryUsecase.js';
-import { updateCategorySchema } from './Schema/UpdateCategorySchema.js';
+import { UpdateCategoryUsecaseInput } from '../Usecases/UpdateCategoryUsecase';
+import { updateCategorySchema } from './Schema/UpdateCategorySchema';
 
 export type UpdateCategoryValidatorInput = UpdateCategoryUsecaseInput;
 

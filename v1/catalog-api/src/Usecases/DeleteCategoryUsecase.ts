@@ -1,8 +1,8 @@
-import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue.js';
-import { CategoryRepository } from '../Repositories/CategoryRepository.js';
+import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
+import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { ErrorMessages } from '../types';
-import { OwnerRepository } from '../Repositories/OwnerRepository.js';
-import { DeleteCategoryValidator } from '../Validators/DeleteCategoryValidator.js';
+import { OwnerRepository } from '../Repositories/OwnerRepository';
+import { DeleteCategoryValidator } from '../Validators/DeleteCategoryValidator';
 
 export type DeleteCategoryUsecaseInput = {
   category: string;

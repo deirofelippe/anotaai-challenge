@@ -1,13 +1,13 @@
 import express from 'express';
-import { CreateCategoryController } from '../Controllers/CreateCategoryController.js';
-import { CreateCategoryUsecase } from '../Usecases/CreateCategoryUsecase.js';
-import { OwnerRepository } from '../Repositories/OwnerRepository.js';
-import { CategoryRepository } from '../Repositories/CategoryRepository.js';
-import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue.js';
-import { UpdateCategoryUsecase } from '../Usecases/UpdateCategoryUsecase.js';
-import { UpdateCategoryController } from '../Controllers/UpdateCategoryController.js';
-import { DeleteCategoryController } from '../Controllers/DeleteCategoryController.js';
-import { DeleteCategoryUsecase } from '../Usecases/DeleteCategoryUsecase.js';
+import { CreateCategoryController } from '../Controllers/CreateCategoryController';
+import { CreateCategoryUsecase } from '../Usecases/CreateCategoryUsecase';
+import { OwnerRepository } from '../Repositories/OwnerRepository';
+import { CategoryRepository } from '../Repositories/CategoryRepository';
+import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
+import { UpdateCategoryUsecase } from '../Usecases/UpdateCategoryUsecase';
+import { UpdateCategoryController } from '../Controllers/UpdateCategoryController';
+import { DeleteCategoryController } from '../Controllers/DeleteCategoryController';
+import { DeleteCategoryUsecase } from '../Usecases/DeleteCategoryUsecase';
 
 const router = express.Router();
 

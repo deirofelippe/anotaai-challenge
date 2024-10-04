@@ -1,4 +1,4 @@
-import { MongoDBSingleton } from '../Config/MongoDBSingleton.js';
+import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 
 export class OwnerRepository {
   public async findOwner(input: { owner: string }): Promise<any[]> {

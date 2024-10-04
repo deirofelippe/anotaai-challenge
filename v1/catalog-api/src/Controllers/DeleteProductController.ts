@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import {
   DeleteProductUsecase,
   DeleteProductUsecaseOutput
-} from '../Usecases/DeleteProductUsecase.js';
+} from '../Usecases/DeleteProductUsecase';
 
 export class DeleteProductController {
   constructor(private deleteProductUsecase: DeleteProductUsecase) {}

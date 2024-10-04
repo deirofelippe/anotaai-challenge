@@ -1,8 +1,8 @@
-import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue.js';
-import { CategoryRepository } from '../Repositories/CategoryRepository.js';
-import { CreateCategoryValidator } from '../Validators/CreateCategoryValidator.js';
+import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
+import { CategoryRepository } from '../Repositories/CategoryRepository';
+import { CreateCategoryValidator } from '../Validators/CreateCategoryValidator';
 import { ErrorMessages } from '../types';
-import { OwnerRepository } from '../Repositories/OwnerRepository.js';
+import { OwnerRepository } from '../Repositories/OwnerRepository';
 
 export type Category = {
   owner: string;

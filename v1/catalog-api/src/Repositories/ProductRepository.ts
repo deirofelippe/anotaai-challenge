@@ -1,8 +1,8 @@
 import { Document, UpdateFilter } from 'mongodb';
-import { MongoDBSingleton } from '../Config/MongoDBSingleton.js';
-import { Product } from '../Usecases/CreateProductUsecase.js';
-import { DeleteProductUsecaseInput } from '../Usecases/DeleteProductUsecase.js';
-import { UpdateProductUsecaseInput } from '../Usecases/UpdateProductUsecase.js';
+import { MongoDBSingleton } from '../Config/MongoDBSingleton';
+import { Product } from '../Usecases/CreateProductUsecase';
+import { DeleteProductUsecaseInput } from '../Usecases/DeleteProductUsecase';
+import { UpdateProductUsecaseInput } from '../Usecases/UpdateProductUsecase';
 
 export type UpdateProductRepositoryInput = UpdateProductUsecaseInput;
 

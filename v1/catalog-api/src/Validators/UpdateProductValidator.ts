@@ -1,7 +1,7 @@
 import { ValidationError } from 'yup';
 import { ErrorMessages } from '../types';
-import { UpdateProductUsecaseInput } from '../Usecases/UpdateProductUsecase.js';
-import { updateProductSchema } from './Schema/UpdateProductSchema.js';
+import { UpdateProductUsecaseInput } from '../Usecases/UpdateProductUsecase';
+import { updateProductSchema } from './Schema/UpdateProductSchema';
 
 export type UpdateProductValidatorInput = UpdateProductUsecaseInput;
 

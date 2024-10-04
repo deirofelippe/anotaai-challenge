@@ -1,7 +1,7 @@
 import { ValidationError } from 'yup';
 import { ErrorMessages } from '../types';
-import { DeleteCategoryUsecaseInput } from '../Usecases/DeleteCategoryUsecase.js';
-import { deleteCategorySchema } from './Schema/DeleteCategorySchema.js';
+import { DeleteCategoryUsecaseInput } from '../Usecases/DeleteCategoryUsecase';
+import { deleteCategorySchema } from './Schema/DeleteCategorySchema';
 
 export type DeleteCategoryValidatorInput = DeleteCategoryUsecaseInput;
 

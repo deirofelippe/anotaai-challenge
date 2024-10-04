@@ -3,7 +3,7 @@ import {
   UpdateCategoryUsecaseInput,
   UpdateCategoryUsecaseOutput,
   UpdateCategoryUsecase
-} from '../Usecases/UpdateCategoryUsecase.js';
+} from '../Usecases/UpdateCategoryUsecase';
 
 export class UpdateCategoryController {
   constructor(private createCategoryUsecase: UpdateCategoryUsecase) {}

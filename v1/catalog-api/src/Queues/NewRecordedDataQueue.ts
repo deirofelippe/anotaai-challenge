@@ -1,4 +1,4 @@
-import { RabbitMQSingleton } from '../Config/RabbitMQSingleton.js';
+import { RabbitMQSingleton } from '../Config/RabbitMQSingleton';
 
 export type NewRecordedDataQueueInput = { owner: string };
 

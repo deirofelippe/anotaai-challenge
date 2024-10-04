@@ -3,7 +3,7 @@ import {
   UpdateProductUsecaseInput,
   UpdateProductUsecaseOutput,
   UpdateProductUsecase
-} from '../Usecases/UpdateProductUsecase.js';
+} from '../Usecases/UpdateProductUsecase';
 
 export class UpdateProductController {
   constructor(private createProductUsecase: UpdateProductUsecase) {}

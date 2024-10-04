@@ -1,8 +1,8 @@
-import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue.js';
-import { CategoryRepository } from '../Repositories/CategoryRepository.js';
-import { OwnerRepository } from '../Repositories/OwnerRepository.js';
-import { ProductRepository } from '../Repositories/ProductRepository.js';
-import { DeleteProductValidator } from '../Validators/DeleteProductValidator.js';
+import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
+import { CategoryRepository } from '../Repositories/CategoryRepository';
+import { OwnerRepository } from '../Repositories/OwnerRepository';
+import { ProductRepository } from '../Repositories/ProductRepository';
+import { DeleteProductValidator } from '../Validators/DeleteProductValidator';
 import { ErrorMessages } from '../types';
 
 export type DeleteProductUsecaseInput = {
