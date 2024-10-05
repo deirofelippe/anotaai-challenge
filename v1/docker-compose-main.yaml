@@ -7,14 +7,16 @@ networks:
 
 services:
   producer:
-    image: deirofelippe/producer-anotaai-challenge:v1
+    image: deirofelippe/producer-anotaai-challenge:latest
     build:
       context: ./catalog-api
       dockerfile: Dockerfile.prod
     container_name: producer
     labels:
       - group=main
-    command: "sleep inf"
+    # command: "sleep inf"
+    env_file:
+      - ./catalog-api/.env
     ports:
       - 3000:3000
       - 9229:9229
@@ -32,14 +34,16 @@ services:
           memory: 512M
 
   consumer:
-    image: deirofelippe/consumer-anotaai-challenge:v1
+    image: deirofelippe/consumer-anotaai-challenge:latest
     build:
       context: ./catalog-emit-consumer
-      dockerfile: Dockerfile.app
+      dockerfile: Dockerfile.prod
     container_name: consumer
     labels:
       - group=main
     # command: "sleep inf"
+    env_file:
+      - ./catalog-emit-consumer/.env
     ports:
       - 3001:3000
       - 9239:9229
