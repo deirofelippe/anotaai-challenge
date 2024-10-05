@@ -1,0 +1,22 @@
+version: "3.8"
+
+networks:
+  desafio:
+    driver: bridge
+    external: true
+
+services:
+  develop:
+    image: deirofelippe/develop-anotaai-challenge:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    container_name: develop
+    labels:
+      - group=main
+    ports:
+      - 3030:3030
+    volumes:
+      - "./:/home/node/app"
+    networks:
+      - desafio
