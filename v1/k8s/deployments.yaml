@@ -1,0 +1,269 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "producer"
+  labels:
+    name: "producer"
+spec:
+  selector:
+    matchLabels:
+      app: "producer"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "producer"
+    spec:
+      containers:
+        - name: "producer"
+          image: deirofelippe/producer-anotaai-challenge:v1.1
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: producer-env
+          # securityContext:
+          #   allowPrivilegeEscalation: false
+          #   runAsUser: 0
+          # command: ["/bin/sleep", "inf"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: 120Mi
+            limits:
+              cpu: "200m"
+              memory: 210Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "consumer"
+  labels:
+    name: "consumer"
+spec:
+  selector:
+    matchLabels:
+      app: "consumer"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "consumer"
+    spec:
+      containers:
+        - name: "consumer"
+          image: deirofelippe/consumer-anotaai-challenge:v1
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: consumer-env
+          # securityContext:
+          #   allowPrivilegeEscalation: false
+          #   runAsUser: 0
+          # command: ["/bin/sleep", "inf"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: 120Mi
+            limits:
+              cpu: "200m"
+              memory: 210Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "mongodb"
+  labels:
+    name: "mongodb"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: "mongodb"
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:6.0.13-jammy
+          ports:
+            - containerPort: 27017
+              protocol: TCP
+          env:
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: password
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: mongodb
+          resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "rabbitmq"
+  labels:
+    name: "rabbitmq"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "rabbitmq"
+    spec:
+      containers:
+        - env:
+            - name: RABBITMQ_DEFAULT_PASS
+              value: password
+            - name: RABBITMQ_DEFAULT_USER
+              value: rabbitmq
+          image: rabbitmq:3.9.29-management
+          name: rabbitmq
+          ports:
+            - containerPort: 5672
+              protocol: TCP
+            - containerPort: 15672
+              protocol: TCP
+            - containerPort: 15692
+              protocol: TCP
+          resources: {}
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "localstack"
+  labels:
+    name: "localstack"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: localstack
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "localstack"
+    spec:
+      containers:
+        - image: localstack/localstack:3.1.0
+          name: localstack
+          env:
+            - name: DEBUG
+              value: "0"
+            - name: AWS_DEFAULT_REGION
+              value: sa-east-1
+          ports:
+            - containerPort: 4566
+              protocol: TCP
+            - containerPort: 4510
+              protocol: TCP
+            - containerPort: 4511
+              protocol: TCP
+            - containerPort: 4512
+              protocol: TCP
+            - containerPort: 4513
+              protocol: TCP
+            - containerPort: 4514
+              protocol: TCP
+            - containerPort: 4515
+              protocol: TCP
+            - containerPort: 4516
+              protocol: TCP
+            - containerPort: 4517
+              protocol: TCP
+            - containerPort: 4518
+              protocol: TCP
+            - containerPort: 4519
+              protocol: TCP
+            - containerPort: 4520
+              protocol: TCP
+            - containerPort: 4521
+              protocol: TCP
+            - containerPort: 4522
+              protocol: TCP
+            - containerPort: 4523
+              protocol: TCP
+            - containerPort: 4524
+              protocol: TCP
+            - containerPort: 4525
+              protocol: TCP
+            - containerPort: 4526
+              protocol: TCP
+            - containerPort: 4527
+              protocol: TCP
+            - containerPort: 4528
+              protocol: TCP
+            - containerPort: 4529
+              protocol: TCP
+            - containerPort: 4530
+              protocol: TCP
+            - containerPort: 4531
+              protocol: TCP
+            - containerPort: 4532
+              protocol: TCP
+            - containerPort: 4533
+              protocol: TCP
+            - containerPort: 4534
+              protocol: TCP
+            - containerPort: 4535
+              protocol: TCP
+            - containerPort: 4536
+              protocol: TCP
+            - containerPort: 4537
+              protocol: TCP
+            - containerPort: 4538
+              protocol: TCP
+            - containerPort: 4539
+              protocol: TCP
+            - containerPort: 4540
+              protocol: TCP
+            - containerPort: 4541
+              protocol: TCP
+            - containerPort: 4542
+              protocol: TCP
+            - containerPort: 4543
+              protocol: TCP
+            - containerPort: 4544
+              protocol: TCP
+            - containerPort: 4545
+              protocol: TCP
+            - containerPort: 4546
+              protocol: TCP
+            - containerPort: 4547
+              protocol: TCP
+            - containerPort: 4548
+              protocol: TCP
+            - containerPort: 4549
+              protocol: TCP
+            - containerPort: 4550
+              protocol: TCP
+            - containerPort: 4551
+              protocol: TCP
+            - containerPort: 4552
+              protocol: TCP
+            - containerPort: 4553
+              protocol: TCP
+            - containerPort: 4554
+              protocol: TCP
+            - containerPort: 4555
+              protocol: TCP
+            - containerPort: 4556
+              protocol: TCP
+            - containerPort: 4557
+              protocol: TCP
+            - containerPort: 4558
+              protocol: TCP
+            - containerPort: 4559
+              protocol: TCP
+          resources: {}
+      restartPolicy: Always

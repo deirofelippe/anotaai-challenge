@@ -1,0 +1,27 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: producer-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: producer
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 60
+  # metrics:
+  #   - type: Pods
+  #     pods:
+  #       metric:
+  #         name: pod:memory_usage_percentage:ratio
+  #       target:
+  #         type: Utilization
+  #         averageValue: 0.5 # 50%
+  #   - type: Pods
+  #     pods:
+  #       metric:
+  #         name: pod:cpu_usage_percentage:ratio
+  #       target:
+  #         type: Utilization
+  #         averageValue: 0.5 # 50%
