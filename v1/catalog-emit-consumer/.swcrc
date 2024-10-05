@@ -27,6 +27,10 @@
       "@tests/*": ["./__tests__/*"]
     }
   },
+  "module": {
+    "type": "commonjs",
+    "resolveFully": true
+  },
   "minify": true,
   "sourceMaps": true
 }
