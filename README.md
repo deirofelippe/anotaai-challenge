@@ -13,6 +13,14 @@ Exercicio feito para por em prática as ferramentas:
 
 Pretendo adicionar mais versões do mesmo sistema, mas implementado com outras tecnologias.
 
+## Apresentação
+
+### V1
+
+Vídeo da versão 1 sendo usada
+
+[![Vídeo da versão 1 sendo usada](https://img.youtube.com/vi/1wTzJHnSl2M/0.jpg)](https://www.youtube.com/watch?v=1wTzJHnSl2M)
+
 ## Versões
 
 ### V1
@@ -64,4 +72,3 @@ Pretendo adicionar mais versões do mesmo sistema, mas implementado com outras t
     - [ ] Fulltext Serach
     - [ ] Sharding
     - [ ] Replication
-
