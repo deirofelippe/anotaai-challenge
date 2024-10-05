@@ -8,10 +8,11 @@
     "yup": "^1.4.0"
   },
   "engines": {
-    "node": ">= 20.10.0"
+    "node": ">= 20.15.0"
   },
   "scripts": {
     "dev": "NODE_ENV=dev npx nodemon --config ./nodemon.json --exec 'node -r @swc-node/register src/server.ts'",
+    "prestart": "npm run build",
     "start": "NODE_ENV=production node build/src/server.js",
     "test": "NODE_ENV=test npx jest --runInBand -c ./jest.config.swc.js",
     "test:debug:swc": "NODE_ENV=test node --inspect-brk ./node_modules/.bin/jest -c ./jest.config.swc.js --runInBand __tests__",
