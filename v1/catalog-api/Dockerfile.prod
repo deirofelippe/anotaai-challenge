@@ -3,15 +3,15 @@ FROM node:20.15.0-alpine3.20
 WORKDIR /home/node/app
 
 RUN apk update \
-    && apk add wget curl git zsh 
+    && apk add wget curl git netcat-openbsd mtr \
+    && echo "alias la='ls -lah'" >> /home/node/.ashrc \
+    && chown node:node /home/node/app
 
-RUN echo "alias la='ls -lah'" >> /home/node/.ashrc 
-
-COPY ./package.json ./package-lock.json ./
+COPY --chown=node:node ./package.json ./package-lock.json ./
 
 RUN npm ci 
 
-COPY ./ ./
+COPY --chown=node:node ./ ./
 
 USER node
 
