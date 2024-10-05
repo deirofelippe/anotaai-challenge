@@ -15,7 +15,7 @@ describe('CreateCategoryUsecase', () => {
 
   beforeAll(async () => {
     await MongoDBSingleton.connect();
-    await RabbitMQSingleton.connect();
+    // await RabbitMQSingleton.connect();
 
     mongoInstance = MongoDBSingleton.getInstance().collection('catalog');
     await mongoInstance.insertOne({});
@@ -23,7 +23,7 @@ describe('CreateCategoryUsecase', () => {
 
   afterAll(async () => {
     await MongoDBSingleton.close();
-    await RabbitMQSingleton.close();
+    // await RabbitMQSingleton.close();
   });
 
   describe('Create category', () => {
