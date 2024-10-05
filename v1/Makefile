@@ -3,11 +3,14 @@ init-all:
 finish-all:
 	@./finish-all.sh
 
+create-network:
+	@docker network create --driver bridge desafio
+
 up-containers: up-main-containers up-observability-containers
 up-main-containers:
-	@docker compose -f ./docker-compose-main.yaml up -d
+	@docker compose -f ./docker-compose-main.yaml up -d --build
 up-observability-containers:
-	@docker compose -f ./docker-compose-observability.yaml up -d
+	@docker compose -f ./docker-compose-observability.yaml up -d --build
 
 restart-containers: up-main-containers up-observability-containers
 restart-main-containers:
@@ -26,14 +29,17 @@ list-observability-containers:
 	@docker container ls -a --format '{{ json . }}' --filter 'label=group=observability' | jq '{ Names, Status, Ports }'
 
 app-producer:
-	@docker compose exec -it producer ash
+	@docker compose -f ./docker-compose-main.yaml exec -it producer ash
 logs-producer:
-	@docker compose logs -f producer
+	@docker compose -f ./docker-compose-main.yaml logs -f producer
+
+develop:
+	@docker compose -f ./docker-compose-main.yaml exec -it develop ash
 
 app-consumer:
-	@docker compose exec -it consumer ash
+	@docker compose -f ./docker-compose-main.yaml exec -it consumer ash
 logs-consumer:
-	@docker compose logs -f consumer
+	@docker compose -f ./docker-compose-main.yaml logs -f consumer
 
 k6-build:
 	@docker container run --rm --name k6 -w /app -v $$(pwd)/k6/:/app -u $$(id -u):$$(id -g) grafana/xk6:0.11.0 build v0.51.0 --with github.com/szkiba/xk6-faker@v0.3.0
