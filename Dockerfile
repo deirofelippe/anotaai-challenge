@@ -2,6 +2,7 @@ FROM node:20.15.0-alpine3.20
 
 WORKDIR /home/node/app
 
+# falta instalar o terraform, kubernetes
 RUN apk update \
     && apk add wget curl git netcat-openbsd mtr \
     && echo "alias la='ls -lah'" >> /home/node/.ashrc \
