@@ -1,37 +1,50 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "producer"
+  name: "producer" # nome do deployment
   labels:
-    app: "producer"
+    app: "producer" # label usado para os recursos se comunicarem e para fazer buscas
 spec:
   selector:
     matchLabels:
-      app: "producer"
+      app: "producer" # label usado para os recursos se comunicarem e para fazer buscas
   replicas: 1
   template:
     metadata:
       labels:
-        app: "producer"
+        app: "producer" # label usado para os recursos se comunicarem e para fazer buscas
     spec:
       containers:
         - name: "producer"
           image: deirofelippe/producer-anotaai-challenge:v1.1
           ports:
             - containerPort: 3000
-          envFrom:
+          envFrom: # injeta as variaveis de ambiente do configmap no pod
             - configMapRef:
                 name: producer-env
+          readinessProbe: # so permite o trafego para o pod, se for feita o health check e der 200, entao muda o status do pod pra READY
+            httpGet:
+              path: /healthy
+              port: 3000
+          livenessProbe:
+            httpGet:
+              path: /healthy
+              port: 3000
+            initialDelaySeconds: 5 # a partir de quantos segundo vai fazer o teste? tempo que a aplicacao leva pra iniciar
+            periodSeconds: 10 # periodo que vao ser feito os testes
+            timeoutSeconds: 1 #
+            successThreshold: 1 # quantos sucessos seguidos depois de uma falha pro k8s saber que realmente está funcionando
+            failureThreshold: 3 # quantas falhas seguidas pro k8s fazer o restart do pod
           # securityContext:
           #   allowPrivilegeEscalation: false
-          #   runAsUser: 0
-          # command: ["/bin/sleep", "inf"]
+          #   runAsUser: 0 # acessa o container como root
+          # command: ["/bin/sleep", "inf"] # sobreescreve o command dafault do container com sleep infinity
           resources:
-            requests:
-              cpu: "250m"
+            requests: # minimo de recursos
+              cpu: "250m" # 250m de 1000m (1000m = 1 vcpu)
               memory: 150Mi
-            limits:
-              cpu: "500m"
+            limits: # maximo de recursos
+              cpu: "500m" # 500m de 1000m (1000m = 1 vcpu)
               memory: 250Mi
 ---
 apiVersion: apps/v1
@@ -55,6 +68,7 @@ spec:
           image: deirofelippe/consumer-anotaai-challenge:v1
           ports:
             - containerPort: 3000
+              protocol: TCP
           envFrom:
             - configMapRef:
                 name: consumer-env
