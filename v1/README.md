@@ -1,27 +1,8 @@
 # V1 - Nodejs, RabbitMQ, MongoDB, Act (GitHub Actions)
 
-observabilidade
-act gif
-testes e cobertura gif img
-performance e como descobri o consumo de recurso
-aws s3 em producao
-descricao do sistemas, features, estrutura das pastas, camadas, logs, alertas
-o que pensei, padroes, parametros de resiliencia
-imagens das guis
+[Link para ver o vídeo da execução usando o docker compose](https://www.youtube.com/watch?v=1wTzJHnSl2M)
 
-imagem
-    arquitetura
-    cobertura de codigo
-    analise estatica
-    teste de performance
-
-o que falta
-    cicd
-    observabilidade
-    melhorar o codigo
-    melhorar os testes
-    c4model
-    documentacao
+[Link para ver o vídeo da execução usando o kubernetes](https://www.youtube.com/watch?v=xRRKmhuxGw8)
 
 ## Sumário
 
@@ -98,7 +79,7 @@ o que falta
 
 ## Como executar usando o kubernetes?
 
-[Link para ver o vídeo da execução usando o kubernetes](https://www.youtube.com/watch?v=)
+[Link para ver o vídeo da execução usando o kubernetes](https://www.youtube.com/watch?v=xRRKmhuxGw8)
 
 1. `kind create cluster --name anotaai`: cria um cluster kubernetes local.
 1. `kubectl create namespace anotaai`: cria um namespace para isolar os recursos que serão usados.
@@ -149,3 +130,36 @@ A ideia do troubleshooting é o mesmo tanto para o docker como para o kubernetes
     - `docker container inspect aplicacao-backend` para ver as configurações de Network, Volumes e outros.
     - `kubectl describe pods -l app=aplicacao-backend`: vai listar as configurações dos pods e o `-l` vai selecionar a label configurada no arquivo com o `<key>=<value>` ou no caso `app=aplicacao-backend`.
     - `kubectl describe services -l app=aplicacao-backend`: vai listar as configurações dos services.
+
+##
+
+observabilidade
+act gif
+testes e cobertura gif img
+performance e como descobri o consumo de recurso
+aws s3 em producao
+descricao do sistemas, features, estrutura das pastas, camadas, logs, alertas, rabbitmq
+o que pensei, padroes, parametros de resiliencia
+imagens das guis
+
+imagem
+    arquitetura
+    cobertura de codigo
+    analise estatica
+    teste de performance
+
+o que falta
+    cicd
+    observabilidade
+    melhorar o codigo
+    melhorar os testes
+    c4model
+    documentacao
+
+k8s
+    observabilidade
+    service mesh
+    probes
+    volumes
+    afinidade
+    recursos

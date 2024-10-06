@@ -2,7 +2,7 @@
 
 Repositório do enunciado teste: https://github.com/githubanotaai/new-test-backend-nodejs
 
-[Acessar o README da V1 (Nodejs, RabbitMQ, MongoDB)](https://github.com/deirofelippe/anotaai-challenge/tree/main/v1)
+[Acessar o README da V1 (Nodejs, RabbitMQ, MongoDB)](https://github.com/deirofelippe/anotaai-challenge/tree/main/v1#readme)
 
 Exercicio feito para por em prática diversas ferramentas. A ideia seria por mais versões e mudando a stack, como por exemplo: nodejs, python, php, rabbitmq, sqs e sns.
 
@@ -10,9 +10,13 @@ Exercicio feito para por em prática diversas ferramentas. A ideia seria por mai
 
 ### V1
 
-Vídeo da versão 1 sendo usada:
+Vídeo da versão 1 sendo usada (Docker)
 
-[![Vídeo da versão 1 sendo usada](https://img.youtube.com/vi/1wTzJHnSl2M/0.jpg)](https://www.youtube.com/watch?v=1wTzJHnSl2M)
+[![Vídeo da versão 1 sendo usada (Docker)](https://img.youtube.com/vi/1wTzJHnSl2M/0.jpg)](https://www.youtube.com/watch?v=1wTzJHnSl2M)
+
+Vídeo da versão 1 sendo usada (Kubernetes)
+
+[![Vídeo da versão 1 sendo usada (Kubernetes)](https://img.youtube.com/vi/xRRKmhuxGw8/0.jpg)](https://www.youtube.com/watch?v=xRRKmhuxGw8)
 
 - **Fila:** RabbitMQ
 - **Banco de dados:** MongoDB
