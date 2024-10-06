@@ -43,11 +43,15 @@ logs-consumer:
 
 k6-build:
 	@docker container run --rm --name k6 -w /app -v $$(pwd)/k6/:/app -u $$(id -u):$$(id -g) grafana/xk6:0.11.0 build v0.51.0 --with github.com/szkiba/xk6-faker@v0.3.0
-k6-run-bin:
+k6-run:
 	@./k6/k6 run --out json=./k6/metrics.json --out influxdb=http://localhost:8086/k6 ./k6/index.js
+k6-run-k8s:
+	@./k6/k6 run --out json=./k6/metrics.json ./k6/index.js
 
 k8s-apply:
 	@kubectl apply -f k8s/services.yaml -f k8s/deployments.yaml -f k8s/configmaps.yaml -f k8s/hpa.yaml -f k8s/metric-server.yaml
+k8s-hpa-watch:
+	@watch -n 1 "kubectl get hpa producer-hpa"
 k8s-delete:
 	@kubectl delete all --all
 k8s-pods:
@@ -57,7 +61,7 @@ k8s-services:
 k8s-deployments:
 	@kubectl get deployments
 k8s-pf-producer:
-	@kubectl port-forward service/producer 3001:3000
+	@kubectl port-forward service/producer 3000:3000
 k8s-pf-localstack:
 	@kubectl port-forward service/localstack 4566:4566
 k8s-config-ns:
