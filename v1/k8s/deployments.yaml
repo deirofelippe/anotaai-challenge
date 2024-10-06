@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: "producer"
   labels:
-    name: "producer"
+    app: "producer"
 spec:
   selector:
     matchLabels:
@@ -39,7 +39,7 @@ kind: Deployment
 metadata:
   name: "consumer"
   labels:
-    name: "consumer"
+    app: "consumer"
 spec:
   selector:
     matchLabels:
@@ -75,7 +75,7 @@ kind: Deployment
 metadata:
   name: "mongodb"
   labels:
-    name: "mongodb"
+    app: "mongodb"
 spec:
   replicas: 1
   selector:
@@ -105,7 +105,7 @@ kind: Deployment
 metadata:
   name: "rabbitmq"
   labels:
-    name: "rabbitmq"
+    app: "rabbitmq"
 spec:
   replicas: 1
   selector:
@@ -141,7 +141,7 @@ kind: Deployment
 metadata:
   name: "localstack"
   labels:
-    name: "localstack"
+    app: "localstack"
 spec:
   replicas: 1
   selector:
