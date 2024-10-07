@@ -31,7 +31,8 @@
 
 [Link para ver o vídeo da execução usando o docker compose](https://www.youtube.com/watch?v=1wTzJHnSl2M)
 
-1. Instale o terraform [aqui](https://developer.hashicorp.com/terraform/install?product_intent=terraform).
+> Precisa instalar o [terraform](https://developer.hashicorp.com/terraform/install?product_intent=terraform).
+
 1. `git clone https://github.com/deirofelippe/anotaai-challenge.git`
 1. `cd ./anotaai-challenge/`
 
@@ -81,8 +82,15 @@
 
 [Link para ver o vídeo da execução usando o kubernetes](https://www.youtube.com/watch?v=xRRKmhuxGw8)
 
+> Precista instalar o [helm](https://helm.sh/docs/intro/install/)
+
 1. `kind create cluster --name anotaai`: cria um cluster kubernetes local.
 1. `kubectl create namespace anotaai`: cria um namespace para isolar os recursos que serão usados.
+1. `helm install prometheus prometheus-community/prometheus --version 25.27.0 --namespace anotaai --set server.service.type=LoadBalancer`: instala o prometheus
+    1. `kubectl port-forward service/prometheus-server 3030:80`
+1. `helm install grafana grafana/grafana --version 8.5.2 --namespace anotaai --set service.type=LoadBalancer`: instala o prometheus
+    1. execute o commando que está saiu no output do helm para pegar a senha do admin, no meu caso o comando é `kubectl get secret --namespace anotaai grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
+    1. `kubectl port-forward service/grafana 3031:80`
 1. `kubectl config set-context --current --namespace=anotaai`: configura o namespace criado como padrão, sem precisar informar `--namespace anotaai`.
 1. `kubectl apply -f ./k8s`: constroi os recursos (deployments, services, hpa) beaseado nos arquivos de configuração.
 1. `kubectl port-forward service/producer 3000:3000`: cria um ponto de acesso local para o pod usando o service.
@@ -150,7 +158,7 @@ imagem
 
 o que falta
     cicd
-    observabilidade
+    observabilidade prometheus alertmanager, grafana, loki, pyroscope
     melhorar o codigo
     melhorar os testes
     c4model
