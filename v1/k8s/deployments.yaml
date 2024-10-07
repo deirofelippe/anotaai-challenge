@@ -11,6 +11,10 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "3000"
       labels:
         app: "producer" # label usado para os recursos se comunicarem e para fazer buscas
     spec:
@@ -30,10 +34,10 @@ spec:
             httpGet:
               path: /healthy
               port: 3000
-            initialDelaySeconds: 5 # a partir de quantos segundo vai fazer o teste? tempo que a aplicacao leva pra iniciar
-            periodSeconds: 10 # periodo que vao ser feito os testes
+            initialDelaySeconds: 15 # a partir de quantos segundo vai fazer o teste? tempo que a aplicacao leva pra iniciar
+            periodSeconds: 30 # periodo que vao ser feito os testes
             timeoutSeconds: 1 #
-            successThreshold: 1 # quantos sucessos seguidos depois de uma falha pro k8s saber que realmente está funcionando
+            successThreshold: 3 # quantos sucessos seguidos depois de uma falha pro k8s saber que realmente está funcionando
             failureThreshold: 3 # quantas falhas seguidas pro k8s fazer o restart do pod
           # securityContext:
           #   allowPrivilegeEscalation: false
@@ -72,6 +76,19 @@ spec:
           envFrom:
             - configMapRef:
                 name: consumer-env
+          readinessProbe: # so permite o trafego para o pod, se for feita o health check e der 200, entao muda o status do pod pra READY
+            httpGet:
+              path: /healthy
+              port: 3000
+          livenessProbe:
+            httpGet:
+              path: /healthy
+              port: 3000
+            initialDelaySeconds: 15 # a partir de quantos segundo vai fazer o teste? tempo que a aplicacao leva pra iniciar
+            periodSeconds: 10 # periodo que vao ser feito os testes
+            timeoutSeconds: 1 #
+            successThreshold: 1 # quantos sucessos seguidos depois de uma falha pro k8s saber que realmente está funcionando
+            failureThreshold: 3 # quantas falhas seguidas pro k8s fazer o restart do pod
           # securityContext:
           #   allowPrivilegeEscalation: false
           #   runAsUser: 0
