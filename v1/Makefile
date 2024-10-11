@@ -28,18 +28,26 @@ list-main-containers:
 list-observability-containers:
 	@docker container ls -a --format '{{ json . }}' --filter 'label=group=observability' | jq '{ Names, Status, Ports }'
 
-app-producer:
-	@docker compose -f ./docker-compose-main.yaml exec -it producer ash
+cicd:
+	@gh extension exec act -C ./catalog-api -j build
+
+exec-producer:
+	@docker container exec -it producer ash
 logs-producer:
-	@docker compose -f ./docker-compose-main.yaml logs -f producer
+	@docker container logs -f producer
 
-develop:
-	@docker compose -f ./docker-compose-main.yaml exec -it develop ash
+exec-develop:
+	@docker container exec -it develop ash
+exec-develop-root:
+	@docker container exec -it -u root develop ash
 
-app-consumer:
-	@docker compose -f ./docker-compose-main.yaml exec -it consumer ash
+exec-consumer:
+	@docker container exec -it consumer ash
 logs-consumer:
-	@docker compose -f ./docker-compose-main.yaml logs -f consumer
+	@docker container logs -f consumer
+
+exec-mongo:
+	@docker container exec -it mongodb mongosh -u admin -p password --host mongodb
 
 k6-build:
 	@docker container run --rm --name k6 -w /app -v $$(pwd)/k6/:/app -u $$(id -u):$$(id -g) grafana/xk6:0.11.0 build v0.51.0 --with github.com/szkiba/xk6-faker@v0.3.0
