@@ -131,12 +131,12 @@ O código está separado nas camadas:
 
 1. `kind create cluster --name anotaai`: cria um cluster kubernetes local.
 1. `kubectl create namespace anotaai`: cria um namespace para isolar os recursos que serão usados.
+1. `kubectl config set-context --current --namespace=anotaai`: configura o namespace criado como padrão, sem precisar informar `--namespace anotaai`.
 1. `helm install prometheus prometheus-community/prometheus --version 25.27.0 --namespace anotaai --set server.service.type=LoadBalancer`: instala o prometheus
     1. `kubectl port-forward service/prometheus-server 3030:80`
 1. `helm install grafana grafana/grafana --version 8.5.2 --namespace anotaai --set service.type=LoadBalancer`: instala o prometheus
     1. execute o commando que está saiu no output do helm para pegar a senha do admin, no meu caso o comando é `kubectl get secret --namespace anotaai grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
     1. `kubectl port-forward service/grafana 3031:80`
-1. `kubectl config set-context --current --namespace=anotaai`: configura o namespace criado como padrão, sem precisar informar `--namespace anotaai`.
 1. `kubectl apply -f ./k8s`: constroi os recursos (deployments, services, hpa) beaseado nos arquivos de configuração.
 1. `kubectl port-forward service/producer 3000:3000`: cria um ponto de acesso local para o pod usando o service.
 1. `kubectl port-forward service/localstack 4566:4566`: cria um ponto de acesso local para o pod usando o service.
