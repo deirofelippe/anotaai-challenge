@@ -4,20 +4,46 @@
 
 [Link para ver o vídeo da execução usando o kubernetes](https://www.youtube.com/watch?v=xRRKmhuxGw8)
 
+O sistema consiste em cadastrar no banco de dados os produtos, categorias e associar um dono (owner) a eles, e enviar uma mensagem para a fila contendo o id do owner. Um consumer vai buscar a mensagem na fila, em seguida buscar os produtos e categorias associadas ao owner no banco de dados, compila essas informações (como um catalogo) em JSON e criar um arquivo na AWS S3.
+
 ## Sumário
 
+- [Práticas de código que foi usado](#práticas-de-código-que-foi-usado)
 - [Como é a arquitetura?](#como-é-a-arquitetura)
     - [Desenho da arquitetura no Kubernetes](#desenho-da-arquitetura-no-kubernetes)
     - [C4 Model](#c4-model)
 - [Como executar usando o docker compose?](#como-executar-usando-o-docker-compose)
     - [Execução com scripts](#execução-com-scripts)
     - [Execução detalhada](#execução-detalhada)
+    - [Execução da cobertura de código](#execução-da-cobertura-de-código)
     - [Execução do teste de performance](#execução-do-teste-de-performance)
     - [Como acessar as GUIs?](#como-acessar-as-guis)
+- [Execução da pipeline CI/CD com Act (GitHub Actions)](#execução-da-pipeline-cicd-com-act-github-actions)
 - [Como executar usando o kubernetes?](#como-executar-usando-o-kubernetes)
 - [Troubleshooting de Docker e Kubernetes](#troubleshooting-de-docker-e-kubernetes)
 
+## Práticas de código que foi usado
+
+- Singleton
+- Arquitetura em camadas: Controller, Usecase e Repository.
+- SRP: principio da responsabilidade única.
+- DIP: principio da injeção de dependências.
+- Fail fast: testar primeiro o erro para evitar o uso de if, else e diminuir a identeção.
+
 ## Como é a arquitetura?
+
+Código separado em camadas deixa o código mais separado e mais testável.
+
+O código está separado nas camadas:
+
+![](./docs/arquitetura-codigo.png)
+
+- Controller: para receber a requisição, devolver o status do response e tratar os erros.
+- Usecase: executa a regra de negócio e gerencia o fluxo de execução chamando as outras camadas.
+- Validator: valida os dados que a api recebeu na requisição.
+- Repository: acesso externo a dados, seja conectando com banco de dados ou API.
+- Queue: camada que se comunicar com fila, independente de qual seja a ferramenta.
+
 
 ### Desenho da arquitetura no Kubernetes
 
@@ -62,6 +88,18 @@
     1. Não precisa rodar `terraform destroy -auto-approve`, pois o volume está somente dentro no container.
 1. `docker compose -f ./docker-compose-observability.yaml down`: 
 
+### Execução da cobertura de código
+
+1. `cd ./v1/catalog-api`
+1. `npm run test:cov`
+1. Abra no navegador o arquivo `./coverage/lcov-report/index.html`
+
+![](./docs/unit-integration-test.gif)
+
+![](./docs/coverage-report-terminal.png)
+
+![](./docs/coverage-report.png)
+
 ### Execução do teste de performance
 
 1. `cd ./v1/`
@@ -77,6 +115,13 @@
 - GUI do MongoDB (Mongo Express): `http://localhost:8081/`
 - GUI do Prometheus: `http://localhost:9090/`
 - GUI do Grafana: `http://localhost:3005/`
+
+## Execução da pipeline CI/CD com Act (GitHub Actions)
+
+1. `cd ./v1/`
+1. `make cicd`
+
+![](./docs/ci-cd.gif)
 
 ## Como executar usando o kubernetes?
 
@@ -132,42 +177,9 @@ A ideia do troubleshooting é o mesmo tanto para o docker como para o kubernetes
                 command: ["/bin/sleep", "inf"]
             ```
 - Verificar se o container/pod consegue se conectar com outro container, se está na mesma rede, se o nome do host está certo, se a porta está configurada.
-    - `apt install -y netcat-openbsd mtr` ou `apk add netcat-openbsd mtr`
+    - `apt install -y netcat mtr` ou `apk add netcat-openbsd mtr`
     - acesse o container/pod e execute `nc -vz mongodb 27017` para testar se o container/pod tem conexão com o host `mongodb`. Se não tiver, deve ser configurado o host, a porta ou a rede corretamente.
 - Verificar se as configurações do container/pod estão certas.
     - `docker container inspect aplicacao-backend` para ver as configurações de Network, Volumes e outros.
     - `kubectl describe pods -l app=aplicacao-backend`: vai listar as configurações dos pods e o `-l` vai selecionar a label configurada no arquivo com o `<key>=<value>` ou no caso `app=aplicacao-backend`.
     - `kubectl describe services -l app=aplicacao-backend`: vai listar as configurações dos services.
-
-##
-
-observabilidade
-act gif
-testes e cobertura gif img
-performance e como descobri o consumo de recurso
-aws s3 em producao
-descricao do sistemas, features, estrutura das pastas, camadas, logs, alertas, rabbitmq
-o que pensei, padroes, parametros de resiliencia
-imagens das guis
-
-imagem
-    arquitetura
-    cobertura de codigo
-    analise estatica
-    teste de performance
-
-o que falta
-    cicd
-    observabilidade prometheus alertmanager, grafana, loki, pyroscope
-    melhorar o codigo
-    melhorar os testes
-    c4model
-    documentacao
-
-k8s
-    observabilidade
-    service mesh
-    probes
-    volumes
-    afinidade
-    recursos
