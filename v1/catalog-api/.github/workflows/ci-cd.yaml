@@ -1,0 +1,72 @@
+name: Pipeline CI-CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6.0.13-jammy
+        env:
+          MONGO_INITDB_ROOT_USERNAME: mongodb
+          MONGO_INITDB_ROOT_PASSWORD: password
+        ports:
+          - '27018:27017'
+        options: >-
+          --health-cmd mongodb
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.15.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run test
+        run: npm run test:ci
+
+      - name: Run Lint
+        run: npm run lint
+
+      - name: Check dependencies for vulnerabilities
+        run: npm audit --audit-level=high
+
+      # - name: Build Docker Image
+      #   run: docker build -t my-app .
+
+      # - name: Notify Telegram
+      #   uses: rtCamp/action-slack-notify@v2
+      #   with:
+      #     webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+      #     message: 'Pipeline completed successfully!'
+
+      # - name: Run Cypress tests
+      #   uses: cypress-io/github-action@v2
+      #   with:
+      #     runTests: true
+
+      # - name: Perform CodeQL Analysis
+      #   uses: github/codeql-action/analyze@v1
+
+      # - name: Run SonarQube Scan
+      #   run: sonar-scanner
+
+      # - name: Deploy to Kubernetes
+      #   uses: azure/k8s-deploy@v2
+      #   with:
+      #     namespace: production
+      #     manifests: ./k8s-manifest.yaml
