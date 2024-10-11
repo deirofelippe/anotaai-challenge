@@ -24,4 +24,4 @@ terraform apply -auto-approve
 cd "$ROOT_PATH"
 
 echo "Executando teste de carga..."
-make k6-run-bin
+make k6-run
