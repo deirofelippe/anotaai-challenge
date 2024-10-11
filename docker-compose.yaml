@@ -1,5 +1,10 @@
 version: "3.8"
 
+networks:
+  desafio:
+    driver: bridge
+    external: true
+
 services:
   develop:
     image: deirofelippe/develop-anotaai-challenge:latest
@@ -7,7 +12,11 @@ services:
       context: ./
       dockerfile: Dockerfile
     container_name: develop
+    working_dir: /home/node/app/v1/catalog-api
+    # working_dir: /home/node/app/v1/catalog-emit-consumer
     ports:
       - 3030:3030
     volumes:
       - "./:/home/node/app"
+    networks:
+      - desafio
