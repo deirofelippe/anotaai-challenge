@@ -1,8 +1,5 @@
 module.exports = {
   clearMocks: true,
-  collectCoverage: false,
-  coverageDirectory: 'coverage',
-  coverageProvider: 'v8',
   moduleDirectories: ['node_modules', '<rootDir>/'],
   // setupFiles: ["<rootDir>/jest-setup-env.ts"],
   // moduleNameMapper: {
@@ -10,5 +7,16 @@ module.exports = {
   // },
   transform: {
     '^.+\\.(t|j)sx?$': '@swc/jest'
+  },
+
+  collectCoverage: false,
+  coverageDirectory: 'coverage',
+  coverageProvider: 'v8',
+  coverageReporters: ['json', 'text', 'lcov', 'clover'],
+  collectCoverageFrom: ['./src/**'],
+  coverageThreshold: {
+    global: {
+      lines: 85
+    }
   }
 };
