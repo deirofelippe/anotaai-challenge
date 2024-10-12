@@ -1,4 +1,4 @@
-name: Pipeline CI-CD
+name: Pipeline CI-CD do Catalog API
 
 on:
   push:
@@ -10,6 +10,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      WORKDIR: ./catalog-api
 
     services:
       mongodb:
@@ -18,7 +20,7 @@ jobs:
           MONGO_INITDB_ROOT_USERNAME: mongodb
           MONGO_INITDB_ROOT_PASSWORD: password
         ports:
-          - '27018:27017'
+          - "27018:27017"
         options: >-
           --health-cmd mongodb
           --health-interval 10s
@@ -31,18 +33,25 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.15.x'
+          node-version: "20.15.x"
 
       - name: Install dependencies
-        run: npm ci
+        working-directory: ${{env.WORKDIR}}
+        run: |
+          pwd
+          ls -lah
+          npm ci
 
       - name: Run test
+        working-directory: ${{env.WORKDIR}}
         run: npm run test:ci
 
       - name: Run Lint
+        working-directory: ${{env.WORKDIR}}
         run: npm run lint
 
       - name: Check dependencies for vulnerabilities
+        working-directory: ${{env.WORKDIR}}
         run: npm audit --audit-level=high
 
       # - name: Build Docker Image
