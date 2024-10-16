@@ -1,7 +1,6 @@
-version: "3.8"
-
 networks:
   desafio:
+    name: desafio
     driver: bridge
     external: true
 
@@ -14,7 +13,8 @@ services:
     container_name: producer
     labels:
       - group=main
-    # command: "sleep inf"
+    # command: sleep infinity
+    command: /usr/local/bin/npm run dev
     env_file:
       - ./catalog-api/.env
     ports:
@@ -22,9 +22,24 @@ services:
       - 9229:9229
     volumes:
       - "./catalog-api:/home/node/app"
+    restart: unless-stopped
     depends_on:
-      - rabbitmq
-      - mongodb
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    develop:
+      watch:
+        - action: rebuild
+          path: ./catalog-api/Dockerfile.prod
+        - action: rebuild
+          path: ./docker-compose-main.yaml
     networks:
       - desafio
     deploy:
@@ -49,6 +64,14 @@ services:
       - 9239:9229
     volumes:
       - "./catalog-emit-consumer:/home/node/app"
+    restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      localstack:
+        condition: service_healthy
     networks:
       - desafio
     deploy:
@@ -69,6 +92,12 @@ services:
       - 5672:5672
       - 15672:15672
       - 15692:15692
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     volumes:
       # - ./.rabbitmq_data/:/var/lib/rabbitmq/
       - ./rabbitmq_enabled_plugins:/etc/rabbitmq/enabled_plugins
@@ -101,13 +130,19 @@ services:
     #   - "./.localstack_data:/var/lib/localstack"
     networks:
       - desafio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
 
   mongodb:
     image: mongo:6.0.13-jammy
     container_name: mongodb
     labels:
       - group=main
-    restart: always
+    restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongodb
       MONGO_INITDB_ROOT_PASSWORD: password
@@ -117,13 +152,19 @@ services:
     #   - ./.mongo_data:/data/db
     networks:
       - desafio
+    # healthcheck:
+    #   test: ["CMD", "nc", "-z", "localhost", "27017"]
+    #   interval: 5s
+    #   timeout: 5s
+    #   retries: 10
+    #   start_period: 10s
 
   mongo-express:
     image: mongo-express:1.0.2-20-alpine3.18
     container_name: mongo-express
     labels:
       - group=main
-    restart: always
+    restart: unless-stopped
     ports:
       - "8081:8081"
     environment:
@@ -131,6 +172,16 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: password
       ME_CONFIG_MONGODB_URL: mongodb://mongodb:password@mongodb:27017/
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_started
+    networks:
+      - desafio
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
     networks:
       - desafio
