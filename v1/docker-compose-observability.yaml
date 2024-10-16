@@ -1,7 +1,6 @@
-version: "3.8"
-
 networks:
   desafio:
+    name: desafio
     driver: bridge
     external: true
 
@@ -16,6 +15,14 @@ services:
     volumes:
       - ./observability/prometheus/alert-rules.yaml:/etc/prometheus/alert-rulers.rules
       - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./observability/prometheus/prometheus.yml
+          target: /etc/prometheus/prometheus.yml:ro
+        - action: sync+restart
+          path: ./observability/prometheus/alert-rules.yaml
+          target: /etc/prometheus/alert-rulers.rules
     ports:
       - 9090:9090
     networks:
@@ -32,6 +39,11 @@ services:
       - "--config.file=/prometheus/alertmanager.yml"
     depends_on:
       - prometheus
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./observability/prometheus/alert-manager.yaml
+          target: /prometheus/alertmanager.yml
     ports:
       - 9093:9093
     networks:
