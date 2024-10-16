@@ -29,7 +29,7 @@ list-observability-containers:
 	@docker container ls -a --format '{{ json . }}' --filter 'label=group=observability' | jq '{ Names, Status, Ports }'
 
 ci-cd:
-	@gh extension exec act --secret-file .act-secrets -C ../ 
+	@gh extension exec act --secret-file .act-secrets -C ../ -j notify
 
 exec-producer:
 	@docker container exec -it producer ash
