@@ -5,18 +5,31 @@ finish-all:
 
 create-network:
 	@docker network create --driver bridge desafio
+remove-network:
+	@docker network rm desafio
 
 up-containers: up-main-containers up-observability-containers
 up-main-containers:
-	@docker compose -f ./docker-compose-main.yaml up -d --build
+	@docker compose -f ./docker-compose.main.yaml up -d --build
 up-observability-containers:
-	@docker compose -f ./docker-compose-observability.yaml up -d --build
+	@docker compose -f ./docker-compose.observability.yaml up -d --build
+	
+watch-main-containers:
+	@docker compose -f ./docker-compose.main.yaml watch
+watch-observability-containers:
+	@docker compose -f ./docker-compose.observability.yaml watch
+
+down-containers: down-main-containers down-observability-containers
+down-main-containers:
+	@docker compose -f ./docker-compose.main.yaml down
+down-observability-containers:
+	@docker compose -f ./docker-compose.observability.yaml down
 
 restart-containers: up-main-containers up-observability-containers
 restart-main-containers:
-	@docker compose -f ./docker-compose-main.yaml restart
+	@docker compose -f ./docker-compose.main.yaml restart
 restart-observability-containers:
-	@docker compose -f ./docker-compose-observability.yaml restart
+	@docker compose -f ./docker-compose.observability.yaml restart
 
 remove-containers:
 	@docker container rm -f $$(docker container ls -a -q)
@@ -29,12 +42,16 @@ list-observability-containers:
 	@docker container ls -a --format '{{ json . }}' --filter 'label=group=observability' | jq '{ Names, Status, Ports }'
 
 ci-cd:
-	@gh extension exec act --secret-file .act-secrets -C ../ -j notify
+	@gh extension exec act --secret-file .act-secrets -C ../ 
 
 exec-producer:
 	@docker container exec -it producer ash
+exec-producer-root:
+	@docker container exec -it -u root producer ash
 logs-producer:
 	@docker container logs -f producer
+stats-producer:
+	@docker container stats producer
 
 exec-develop:
 	@docker container exec -it develop ash
