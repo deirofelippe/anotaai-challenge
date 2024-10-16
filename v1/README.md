@@ -183,3 +183,21 @@ A ideia do troubleshooting é o mesmo tanto para o docker como para o kubernetes
     - `docker container inspect aplicacao-backend` para ver as configurações de Network, Volumes e outros.
     - `kubectl describe pods -l app=aplicacao-backend`: vai listar as configurações dos pods e o `-l` vai selecionar a label configurada no arquivo com o `<key>=<value>` ou no caso `app=aplicacao-backend`.
     - `kubectl describe services -l app=aplicacao-backend`: vai listar as configurações dos services.
+
+## Como descobrir quanto de recurso sua aplicação aguenta?
+
+- Mude as requisições que serão feitas para que a aplicação deve suportar no k6, estes arquivos são qualquer um que siga esse padrão `./k6/options-*.js`.
+- Execute o k6 com `make k6-run`.
+- Monitore o consumo de recurso do container com `make stats-producer`.
+- Aumente os recursos do container no docker compose ou otimize sua performance.
+
+## Development
+
+- Usando o Dev Containers
+    - Abre o vscode em `./anotaai-challenge`, onde tem o diretório `.devcontainer`
+    - Digite no vscode `ctrl+shift+p` e selecione `Dev Containers: Rebuild and Reopen in Container`
+    - Ele vai subir o container develop do docker compose em `../docker-compose.yaml`. Esse container terá as extensões do vscode e configurações, então o intelisense do javascript vai funcionar e poderá
+    - Caso queria abrir uma pasta dentro do container, digite `ctrl+shift+p` e escreva `File: Open Folder...` e escolha o caminho da pasta que quiser, como por exemplo `/home/node/app/v1/catalog-api`
+- Usando o Watch do Docker Compose
+    - Iniciar os containeres com `make init-all` ou `make up-main-containers`
+    - Execute `make watch-main-containers`
