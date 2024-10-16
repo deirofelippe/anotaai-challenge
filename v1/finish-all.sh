@@ -1,10 +1,10 @@
 #!/bin/bash
 
 echo "Fechando containers principais..."
-docker compose -f ./docker-compose-main.yaml down
+make down-main-containers
 
 echo "Fechando containers de observability..."
-docker compose -f ./docker-compose-observability.yaml down
+make down-observability-containers
 
 echo "Removendo network..."
-docker network rm desafio
+make remove-network

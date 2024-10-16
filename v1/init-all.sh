@@ -5,13 +5,13 @@ ROOT_PATH=$(pwd)
 cd "$ROOT_PATH"
 
 echo "Criando network..."
-docker network create --driver bridge desafio
+make create-network
 
 echo "Iniciando containers principais..."
-docker compose -f ./docker-compose-main.yaml up -d --build
+make up-main-containers
 
 echo "Iniciando containers de observability..."
-docker compose -f ./docker-compose-observability.yaml up -d --build
+make up-observability-containers
 
 cd terraform
 
