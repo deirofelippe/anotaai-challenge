@@ -97,23 +97,36 @@ jobs:
       #     namespace: production
       #     manifests: ./k8s-manifest.yaml
 
-  notify:
+  success-notify:
     needs: [cd]
     runs-on: ubuntu-latest
-    if: ${{ failure() }} || ${{ success() }}
+    if: ${{ success() }}
 
     steps:
-      - name: Notify Telegram
+      - name: Notify Telegram If Success
         run: |
-          if [[ "${{ failure() }}" == "true" ]]; then
-            TELEGRAM_MESSAGE='[V1 CatalogAPI] Falha na pipeline'
-          else
-            TELEGRAM_MESSAGE='[V1 CatalogAPI] Pipeline foi finalizada'
-          fi
+          TELEGRAM_MESSAGE='[V1 CatalogAPI] Pipeline foi finalizada'
 
           CURL_DATA=$(printf '{"chat_id":"%s","text":"%s"}' "${{ secrets.TELEGRAM_CHAT_ID }}" "$TELEGRAM_MESSAGE")
 
           curl https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
             --request POST \
             --header 'Content-Type: application/json' \
-            --data "'$CURL_DATA'"
+            --data "$CURL_DATA"
+
+  failure-notify:
+    needs: [cd]
+    runs-on: ubuntu-latest
+    if: ${{ failure() }}
+
+    steps:
+      - name: Notify Telegram If Failure
+        run: |
+          TELEGRAM_MESSAGE='[V1 CatalogAPI] Falha na pipeline'
+
+          CURL_DATA=$(printf '{"chat_id":"%s","text":"%s"}' "${{ secrets.TELEGRAM_CHAT_ID }}" "$TELEGRAM_MESSAGE")
+
+          curl https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data "$CURL_DATA"
