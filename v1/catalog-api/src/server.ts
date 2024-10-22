@@ -23,10 +23,10 @@ const histogram = new Histogram({
   registers: [register],
   name: 'producer_response_time',
   help: 'Tempo de resposta',
-  labelNames: ['path'],
+  labelNames: ['path', 'method'],
   buckets: [
-    0.01, 1, 5, 10, 25, 50, 100, 150, 200, 300, 400, 500, 600, 1_000, 3_000,
-    7_000, 10_000, 20_000, 50_000
+    1, 5, 10, 25, 50, 100, 150, 200, 300, 400, 500, 600, 1_000, 3_000, 7_000,
+    10_000, 20_000, 50_000
   ]
 });
 
@@ -87,7 +87,7 @@ app.use(
     console.log(time + 'ms');
 
     try {
-      histogram.observe({ path }, time);
+      histogram.observe({ path, method }, time);
     } catch (error) {
       console.log(error);
     }
