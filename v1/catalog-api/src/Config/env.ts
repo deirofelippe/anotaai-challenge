@@ -7,6 +7,9 @@ const isDevelopment = ['dev', 'development'].includes(nodeEnv);
 const isProduction = ['prod', 'production'].includes(nodeEnv);
 const isCI = process.env.CI === 'true';
 
+const disableLogs = process.env.DISABLE_LOGS === undefined ? false : true;
+const logLevel = process.env.LOG_LEVEL ?? 'info';
+
 let mongoHost = process.env.MONGODB_HOST;
 const mongoUser = process.env.MONGODB_USER;
 const mongoPassword = process.env.MONGODB_PASSWORD;
@@ -29,6 +32,8 @@ if (isCI) {
 }
 
 export {
+  disableLogs,
+  logLevel,
   nodeEnv,
   isTesting,
   isProduction,
