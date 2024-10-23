@@ -1,21 +1,29 @@
 groups:
-  - name: Postgresql
-    rules:
-      - alert: PostgreSQLDown
-        expr: pg_up != 1 or absent(pg_up) == 1
-        for: 10s
-        labels:
-          team: database
-        annotations:
-          titulo: Banco de dados postgresql fora do ar
-          descricao: O banco de dados postgresql está fora do ar
   - name: WebAPI
     rules:
       - alert: MuitoAcesso
-        expr: sum(rate(http_requests_total{instance="nodeapp:3000"}[5s])) > 100
+        expr: sum(increase(producer_request_info{instance="producer:3000"}[20s])) > 20
         for: 5s
         labels:
           team: web
         annotations:
           titulo: Muitas requisições na aplicação
           descricao: A aplicação está com muitas requisições
+
+      - alert: MuitosErros
+        expr: sum(increase(producer_request_info{instance="producer:3000",status_code="5XX"}[10s])) > 5
+        for: 5s
+        labels:
+          team: web
+        annotations:
+          titulo: Muitos erros
+          descricao: O site está tendo muitos erros
+
+      - alert: SiteForaDoAr
+        expr: histogram_quantile(0.95, sum(rate(producer_response_time_bucket[10m])) by (le)) > 500
+        for: 5s
+        labels:
+          team: web
+        annotations:
+          titulo: Site fora do ar
+          descricao: Site fora do ar, houve algum problema
