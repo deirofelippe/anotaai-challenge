@@ -49,7 +49,7 @@ scrape_configs:
     scrape_interval: 1s
     static_configs:
       - targets:
-          - consumer:3001
+          - consumer:3000
 
   - job_name: producer
     scrape_interval: 1s
