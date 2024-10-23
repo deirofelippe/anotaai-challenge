@@ -6,6 +6,7 @@ import {
   mongoUser
 } from './env';
 import { MongoClient } from 'mongodb';
+import { logger } from './Logger';
 
 export class MongoDBSingleton {
   private static connection?: MongoClient = undefined;
@@ -14,6 +15,10 @@ export class MongoDBSingleton {
 
   public static getInstance() {
     if (!MongoDBSingleton.connection) {
+      logger.error({
+        context: 'mongodb',
+        data: 'A conexão com o MongoDB não foi aberta.'
+      });
       throw new Error('A conexão com o MongoDB não foi aberta.');
     }
 
@@ -31,7 +36,10 @@ export class MongoDBSingleton {
       auth: { username: mongoUser, password: mongoPassword }
     });
     MongoDBSingleton.connection = await client.connect();
-    console.log('MongoDB connection successfully');
+    logger.debug({
+      context: 'mongodb',
+      data: 'MongoDB connection successfully'
+    });
 
     return this;
   }
