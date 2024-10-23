@@ -4,22 +4,50 @@ import {
   UpdateCategoryUsecaseOutput,
   UpdateCategoryUsecase
 } from '../Usecases/UpdateCategoryUsecase';
+import { logger } from '../Config/Logger';
 
 export class UpdateCategoryController {
-  constructor(private createCategoryUsecase: UpdateCategoryUsecase) {}
+  constructor(private updateCategoryUsecase: UpdateCategoryUsecase) {}
 
   public async execute(req: Request, res: Response) {
+    logger.info({
+      context: 'controller',
+      data: 'Iniciando o controller de UpdateCategoryController'
+    });
+
     const body = req.body as UpdateCategoryUsecaseInput;
+
+    logger.info({ context: 'controller', data: 'BODY REQUEST' });
+    logger.info({
+      context: 'controller',
+      data: {
+        body,
+        params: req.params
+      }
+    });
 
     let result: UpdateCategoryUsecaseOutput;
     try {
-      result = await this.createCategoryUsecase.execute({
+      result = await this.updateCategoryUsecase.execute({
         owner: body.owner,
         category: req.params.title as string,
         fields: body.fields
       });
+
+      logger.debug({
+        context: 'controller',
+        data: { description: 'Output do UpdateCategoryUsecase', output: result }
+      });
+      logger.info({
+        context: 'controller',
+        data: 'Finalizando o controller de UpdateCategoryController'
+      });
     } catch (error) {
-      console.log(error);
+      logger.error({
+        context: 'controller',
+        data: 'Erro no controller de UpdateCategoryController'
+      });
+      logger.error({ context: 'controller', data: error });
 
       return res
         .status(500)

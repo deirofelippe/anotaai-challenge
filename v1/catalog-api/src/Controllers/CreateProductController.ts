@@ -4,12 +4,21 @@ import {
   CreateProductUsecaseOutput,
   CreateProductUsecase
 } from '../Usecases/CreateProductUsecase';
+import { logger } from '../Config/Logger';
 
 export class CreateProductController {
   constructor(private createProductUsecase: CreateProductUsecase) {}
 
   public async execute(req: Request, res: Response) {
+    logger.info({
+      context: 'controller',
+      data: 'Iniciando o controller de CreateProductController'
+    });
+
     const body = req.body as CreateProductUsecaseInput;
+
+    logger.info({ context: 'controller', data: 'BODY REQUEST' });
+    logger.info({ context: 'controller', data: { body } });
 
     let result: CreateProductUsecaseOutput;
     try {
@@ -20,8 +29,21 @@ export class CreateProductController {
         description: body.description,
         price: body.price
       });
+
+      logger.debug({
+        context: 'controller',
+        data: { description: 'Output do CreateProductUsecase', output: result }
+      });
+      logger.info({
+        context: 'controller',
+        data: 'Finalizando o controller de CreateProductController'
+      });
     } catch (error) {
-      console.log(error);
+      logger.error({
+        context: 'controller',
+        data: 'Erro no controller de CreateCategory'
+      });
+      logger.error({ context: 'controller', data: error });
 
       return res
         .status(500)

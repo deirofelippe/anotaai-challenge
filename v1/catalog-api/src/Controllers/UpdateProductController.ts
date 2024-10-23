@@ -4,23 +4,51 @@ import {
   UpdateProductUsecaseOutput,
   UpdateProductUsecase
 } from '../Usecases/UpdateProductUsecase';
+import { logger } from '../Config/Logger';
 
 export class UpdateProductController {
-  constructor(private createProductUsecase: UpdateProductUsecase) {}
+  constructor(private updateProductUsecase: UpdateProductUsecase) {}
 
   public async execute(req: Request, res: Response) {
+    logger.info({
+      context: 'controller',
+      data: 'Iniciando o controller de UpdateProductController'
+    });
+
     const body = req.body as UpdateProductUsecaseInput;
+
+    logger.info({ context: 'controller', data: 'BODY REQUEST' });
+    logger.info({
+      context: 'controller',
+      data: {
+        body,
+        params: req.params
+      }
+    });
 
     let result: UpdateProductUsecaseOutput;
     try {
-      result = await this.createProductUsecase.execute({
+      result = await this.updateProductUsecase.execute({
         owner: body.owner,
         category: body.category,
         product: req.params.title,
         fields: body.fields
       });
+
+      logger.debug({
+        context: 'controller',
+        data: { description: 'Output do UpdateProductUsecase', output: result }
+      });
+      logger.info({
+        context: 'controller',
+        data: 'Finalizando o controller de UpdateProductController'
+      });
     } catch (error) {
-      console.log(error);
+      logger.error({
+        context: 'controller',
+        data: 'Erro no controller de UpdateProductController'
+      });
+      logger.error({ context: 'controller', data: error });
 
       return res
         .status(500)
