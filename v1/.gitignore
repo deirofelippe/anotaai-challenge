@@ -1,1 +1,3 @@
 .*_data
+observability/prometheus/alert-manager.yaml
+observability/promtail/position
