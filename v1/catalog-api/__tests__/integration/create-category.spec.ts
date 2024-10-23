@@ -1,14 +1,13 @@
-import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
-import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
-import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
-import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
+import { MongoDBSingleton } from '../../src/config/mongodb-singleton';
+import { CategoryRepository } from '../../src/repositories/category-repository';
+import { NewRecordedDataQueue } from '../../src/queues/new-recorded-data-queue';
 import { faker } from '@faker-js/faker';
-import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
+import { OwnerRepository } from '../../src/repositories/owner-repository';
 import { Collection, Document } from 'mongodb';
 import {
   CreateCategoryUsecase,
   CreateCategoryUsecaseInput
-} from '../../src/Usecases/CreateCategoryUsecase';
+} from '../../src/usecases/create-category-usecase';
 
 describe('CreateCategoryUsecase', () => {
   let mongoInstance: Collection<Document>;

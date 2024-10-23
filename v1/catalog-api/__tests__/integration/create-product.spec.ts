@@ -1,15 +1,14 @@
-import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
-import { ProductRepository } from '../../src/Repositories/ProductRepository';
-import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
-import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
+import { MongoDBSingleton } from '../../src/config/mongodb-singleton';
+import { ProductRepository } from '../../src/repositories/product-repository';
+import { NewRecordedDataQueue } from '../../src/queues/new-recorded-data-queue';
 import { faker } from '@faker-js/faker';
-import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
-import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
+import { OwnerRepository } from '../../src/repositories/owner-repository';
+import { CategoryRepository } from '../../src/repositories/category-repository';
 import { Collection, Document } from 'mongodb';
 import {
   CreateProductUsecase,
   CreateProductUsecaseInput
-} from '../../src/Usecases/CreateProductUsecase';
+} from '../../src/usecases/create-product-usecase';
 
 describe('CreateProductUsecase', () => {
   let mongoInstance: Collection<Document>;

@@ -1,12 +1,12 @@
 import express from 'express';
 import { errorHandling } from './errorHandling';
-import { indexRoutes } from './Routes/routes';
-import { categoryRoutes } from './Routes/categories.routes';
-import { productRoutes } from './Routes/products.routes';
-import { RabbitMQSingleton } from './Config/RabbitMQSingleton';
-import { MongoDBSingleton } from './Config/MongoDBSingleton';
-import { metricsRegisterRequestInfo } from './middlewares/metricsRegisterRequestInfoMiddleware';
-import { metricsRegisterResponseTime } from './middlewares/metricsRegisterResponseTimeMiddleware';
+import { indexRoutes } from './routes/routes';
+import { categoryRoutes } from './routes/categories.routes';
+import { productRoutes } from './routes/products.routes';
+import { RabbitMQSingleton } from './config/rabbitmq-singleton';
+import { MongoDBSingleton } from './config/mongodb-singleton';
+import { metricsRegisterRequestInfo } from './middlewares/metrics-register-request-info-middleware';
+import { metricsRegisterResponseTime } from './middlewares/metrics-register-response-time-middleware';
 
 const app = express();
 const port = 3000;

@@ -1,13 +1,12 @@
-import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
-import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
-import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
-import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
-import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
+import { MongoDBSingleton } from '../../src/config/mongodb-singleton';
+import { CategoryRepository } from '../../src/repositories/category-repository';
+import { NewRecordedDataQueue } from '../../src/queues/new-recorded-data-queue';
+import { OwnerRepository } from '../../src/repositories/owner-repository';
 import { Collection, Document } from 'mongodb';
 import {
   UpdateCategoryUsecase,
   UpdateCategoryUsecaseInput
-} from '../../src/Usecases/UpdateCategoryUsecase';
+} from '../../src/usecases/update-category-usecase';
 
 describe('UpdateCategoryUsecase', () => {
   let mongoInstance: Collection<Document>;

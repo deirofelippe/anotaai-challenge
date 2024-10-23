@@ -1,17 +1,14 @@
-import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
-import { ProductRepository } from '../../src/Repositories/ProductRepository';
-import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
-import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
-import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
-import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
+import { MongoDBSingleton } from '../../src/config/mongodb-singleton';
+import { ProductRepository } from '../../src/repositories/product-repository';
+import { NewRecordedDataQueue } from '../../src/queues/new-recorded-data-queue';
+import { OwnerRepository } from '../../src/repositories/owner-repository';
+import { CategoryRepository } from '../../src/repositories/category-repository';
 import { Collection, Document } from 'mongodb';
 import {
   DeleteProductUsecase,
   DeleteProductUsecaseInput
-} from '../../src/Usecases/DeleteProductUsecase';
+} from '../../src/usecases/delete-product-usecase';
 
-//recebe um titulo, busca o titulo, se existir, deleta, senao
-//recebe como query owner=123&category=BlaBla
 describe('DeleteProductUsecase', () => {
   let mongoInstance: Collection<Document>;
 

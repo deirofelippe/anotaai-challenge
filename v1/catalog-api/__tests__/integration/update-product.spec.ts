@@ -1,15 +1,13 @@
-import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
-import { ProductRepository } from '../../src/Repositories/ProductRepository';
-import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
-import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
-import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
+import { MongoDBSingleton } from '../../src/config/mongodb-singleton';
+import { ProductRepository } from '../../src/repositories/product-repository';
+import { NewRecordedDataQueue } from '../../src/queues/new-recorded-data-queue';
+import { OwnerRepository } from '../../src/repositories/owner-repository';
 import { Collection, Document } from 'mongodb';
 import {
   UpdateProductUsecase,
   UpdateProductUsecaseInput
-} from '../../src/Usecases/UpdateProductUsecase';
-import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
-import { log } from '../../src/Config/Logger';
+} from '../../src/usecases/update-product-usecase';
+import { CategoryRepository } from '../../src/repositories/category-repository';
 
 describe('UpdateProductUsecase', () => {
   let mongoInstance: Collection<Document>;

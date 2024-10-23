@@ -1,13 +1,12 @@
 import { Collection, Document } from 'mongodb';
-import { MongoDBSingleton } from '../../src/Config/MongoDBSingleton';
-import { RabbitMQSingleton } from '../../src/Config/RabbitMQSingleton';
-import { NewRecordedDataQueue } from '../../src/Queues/NewRecordedDataQueue';
-import { CategoryRepository } from '../../src/Repositories/CategoryRepository';
-import { OwnerRepository } from '../../src/Repositories/OwnerRepository';
+import { MongoDBSingleton } from '../../src/config/mongodb-singleton';
+import { NewRecordedDataQueue } from '../../src/queues/new-recorded-data-queue';
+import { CategoryRepository } from '../../src/repositories/category-repository';
+import { OwnerRepository } from '../../src/repositories/owner-repository';
 import {
   DeleteCategoryUsecase,
   DeleteCategoryUsecaseInput
-} from '../../src/Usecases/DeleteCategoryUsecase';
+} from '../../src/usecases/delete-category-usecase';
 
 describe('DeleteCategoryUsecase', () => {
   let mongoInstance: Collection<Document>;
