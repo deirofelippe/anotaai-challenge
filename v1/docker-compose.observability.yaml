@@ -28,6 +28,52 @@ services:
     networks:
       - desafio
 
+  grafana:
+    image: grafana/grafana:9.3.8
+    container_name: grafana
+    labels:
+      - group=observability
+    ports:
+      - "3005:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_BASIC_ENABLED=false
+    volumes:
+      - ./observability/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    networks:
+      - desafio
+
+  promtail:
+    image: grafana/promtail:2.7.5
+    container_name: promtail
+    labels:
+      - group=observability
+    volumes:
+      - ./observability/promtail/config.yaml:/etc/promtail/config.yml
+      - ./observability/promtail/position/:/position/
+      - /var/log/:/logs/syslogs/
+      - ./catalog-api/logs/:/logs/producer/
+    ports:
+      - 9080:9080
+    depends_on:
+      - loki
+    networks:
+      - desafio
+
+  loki:
+    image: grafana/loki:2.7.5
+    container_name: loki
+    labels:
+      - group=observability
+    command:
+      - -config.file=/etc/loki/local-config.yaml
+      - -print-config-stderr=true
+    ports:
+      - 3100:3100
+    networks:
+      - desafio
+
   alertmanager:
     image: prom/alertmanager:v0.25.0
     container_name: alertmanager
@@ -74,21 +120,5 @@ services:
       - "8086:8086"
     environment:
       - INFLUXDB_DB=k6
-    networks:
-      - desafio
-
-  grafana:
-    image: grafana/grafana:9.3.8
-    container_name: grafana
-    labels:
-      - group=observability
-    ports:
-      - "3005:3000"
-    environment:
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_BASIC_ENABLED=false
-    volumes:
-      - ./observability/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
     networks:
       - desafio
