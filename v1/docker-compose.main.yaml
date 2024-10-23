@@ -9,7 +9,7 @@ services:
     image: deirofelippe/producer-anotaai-challenge:latest
     build:
       context: ./catalog-api
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile
     container_name: producer
     labels:
       - group=main
@@ -29,7 +29,7 @@ services:
       mongodb:
         condition: service_started
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthcheck"]
       interval: 5s
       timeout: 5s
       retries: 10
