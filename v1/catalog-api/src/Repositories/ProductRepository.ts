@@ -3,11 +3,22 @@ import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 import { Product } from '../Usecases/CreateProductUsecase';
 import { DeleteProductUsecaseInput } from '../Usecases/DeleteProductUsecase';
 import { UpdateProductUsecaseInput } from '../Usecases/UpdateProductUsecase';
+import { logger } from '../Config/Logger';
 
 export type UpdateProductRepositoryInput = UpdateProductUsecaseInput;
 
 export class ProductRepository {
   public async createProduct(input: Product) {
+    logger.info({
+      context: 'repository',
+      data: 'Iniciando o ProductRepository.createProduct'
+    });
+    logger.debug({
+      context: 'repository',
+      data: {
+        input
+      }
+    });
     const db = MongoDBSingleton.getInstance();
 
     try {
@@ -27,14 +38,32 @@ export class ProductRepository {
         },
         { arrayFilters: [{ 'e1.category_title': input.category }] }
       );
+
+      logger.info({
+        context: 'repository',
+        data: 'Finalizando o ProductRepository.createProduct'
+      });
     } catch (error) {
-      console.error('Erro ao criar produto no banco');
-      console.error('Dados: ', JSON.stringify(input));
+      logger.error({
+        context: 'repository',
+        data: 'Erro no ProductRepository.createProduct'
+      });
+      logger.error({ context: 'repository', data: error });
       throw error;
     }
   }
 
   public async updateProduct(input: UpdateProductRepositoryInput) {
+    logger.info({
+      context: 'repository',
+      data: 'Iniciando o ProductRepository.updateProduct'
+    });
+    logger.debug({
+      context: 'repository',
+      data: {
+        input
+      }
+    });
     const db = MongoDBSingleton.getInstance();
 
     const updateFilter: UpdateFilter<Document> = {
@@ -60,6 +89,11 @@ export class ProductRepository {
       };
     }
 
+    logger.debug({
+      context: 'repository',
+      data: { description: 'Filtro do mongodb', updateFilter }
+    });
+
     try {
       await db.collection('catalog').updateOne(
         {
@@ -77,14 +111,32 @@ export class ProductRepository {
           ]
         }
       );
+
+      logger.info({
+        context: 'repository',
+        data: 'Finalizando o ProductRepository.updateProduct'
+      });
     } catch (error) {
-      console.error('Erro ao criar categoria no banco');
-      console.error('Dados: ', JSON.stringify(input));
+      logger.error({
+        context: 'repository',
+        data: 'Erro no ProductRepository.updateProduct'
+      });
+      logger.error({ context: 'repository', data: error });
       throw error;
     }
   }
 
   public async deleteProduct(input: DeleteProductUsecaseInput) {
+    logger.info({
+      context: 'repository',
+      data: 'Iniciando o ProductRepository.deleteProduct'
+    });
+    logger.debug({
+      context: 'repository',
+      data: {
+        input
+      }
+    });
     const db = MongoDBSingleton.getInstance();
 
     try {
@@ -102,9 +154,17 @@ export class ProductRepository {
           }
         }
       );
+
+      logger.info({
+        context: 'repository',
+        data: 'Finalizando o ProductRepository.deleteProduct'
+      });
     } catch (error) {
-      console.error('Erro ao criar produto no banco');
-      console.error('Dados: ', JSON.stringify(input));
+      logger.error({
+        context: 'repository',
+        data: 'Erro no ProductRepository.deleteProduct'
+      });
+      logger.error({ context: 'repository', data: error });
       throw error;
     }
   }
@@ -114,10 +174,20 @@ export class ProductRepository {
     category: string;
     title: string;
   }): Promise<any[]> {
+    logger.info({
+      context: 'repository',
+      data: 'Iniciando o ProductRepository.findProductByTitle'
+    });
+    logger.debug({
+      context: 'repository',
+      data: {
+        input
+      }
+    });
     const db = MongoDBSingleton.getInstance();
 
     try {
-      return await db
+      const result = await db
         .collection('catalog')
         .find({
           owner: input.owner,
@@ -132,9 +202,19 @@ export class ProductRepository {
           'catalog.itens.price': 1
         })
         .toArray();
+
+      logger.info({
+        context: 'repository',
+        data: 'Finalizando o ProductRepository.findProductByTitle'
+      });
+
+      return result;
     } catch (error) {
-      console.error('Erro ao buscar produto no banco');
-      console.error('Dados: ', JSON.stringify(input));
+      logger.error({
+        context: 'repository',
+        data: 'Erro no ProductRepository.findProductByTitle'
+      });
+      logger.error({ context: 'repository', data: error });
       throw error;
     }
   }

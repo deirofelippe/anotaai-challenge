@@ -1,11 +1,22 @@
+import { logger } from '../Config/Logger';
 import { MongoDBSingleton } from '../Config/MongoDBSingleton';
 
 export class OwnerRepository {
   public async findOwner(input: { owner: string }): Promise<any[]> {
+    logger.info({
+      context: 'repository',
+      data: 'Iniciando o OwnerRepository.findOwner'
+    });
+    logger.debug({
+      context: 'repository',
+      data: {
+        input
+      }
+    });
     const db = MongoDBSingleton.getInstance();
 
     try {
-      return await db
+      const result = await db
         .collection('catalog')
         .find({
           owner: input.owner
@@ -15,9 +26,19 @@ export class OwnerRepository {
           owner: 1
         })
         .toArray();
+
+      logger.info({
+        context: 'repository',
+        data: 'Finalizando o OwnerRepository.findOwner'
+      });
+
+      return result;
     } catch (error) {
-      console.error('Erro ao buscar owner no banco');
-      console.error('Dados: ', JSON.stringify(input));
+      logger.error({
+        context: 'repository',
+        data: 'Erro no OwnerRepository.findOwner'
+      });
+      logger.error({ context: 'repository', data: error });
       throw error;
     }
   }
