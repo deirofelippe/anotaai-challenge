@@ -1,5 +1,7 @@
 import { rabbitUsername, rabbitPassword, rabbitHost, rabbitPort } from './env';
 import { Connection, Consumer, Publisher } from 'rabbitmq-client';
+import { declareExchangeAndQueue } from './rabbitmq/declarations';
+import { logger } from './Logger';
 
 export class RabbitMQSingleton {
   private static connection?: Connection = undefined;
@@ -10,6 +12,10 @@ export class RabbitMQSingleton {
 
   public static getInstance() {
     if (!RabbitMQSingleton.connection) {
+      logger.error({
+        context: 'rabbitmq',
+        data: 'A conexão com o RabbitMQ não foi aberta.'
+      });
       throw new Error('A conexão com o RabbitMQ não foi aberta.');
     }
 
@@ -18,6 +24,10 @@ export class RabbitMQSingleton {
 
   public static getPublisher() {
     if (!RabbitMQSingleton.connection) {
+      logger.error({
+        context: 'rabbitmq',
+        data: 'A conexão com o RabbitMQ não foi aberta.'
+      });
       throw new Error('A conexão com o RabbitMQ não foi aberta.');
     }
 
@@ -34,81 +44,26 @@ export class RabbitMQSingleton {
     const rabbitmq = new Connection(url);
 
     rabbitmq.on('error', (err) => {
-      console.log('RabbitMQ connection error', err);
+      logger.debug({
+        context: 'rabbitmq',
+        data: { description: 'RabbitMQ connection error', error: err }
+      });
     });
     rabbitmq.on('connection', () => {
-      console.log('RabbitMQ connection successfully');
+      logger.debug({
+        context: 'rabbitmq',
+        data: 'RabbitMQ connection successfully'
+      });
     });
     RabbitMQSingleton.connection = rabbitmq;
 
-    await this.declareExchangeAndQueue();
+    const publisher = await declareExchangeAndQueue(
+      RabbitMQSingleton.connection!
+    );
+
+    RabbitMQSingleton.publisher = publisher;
 
     return this;
-  }
-
-  private static async declareExchangeAndQueue() {
-    const rabbitmq = RabbitMQSingleton.connection!;
-
-    await rabbitmq.exchangeDeclare({
-      exchange: 'change-dlx',
-      type: 'direct',
-      durable: true,
-      autoDelete: false
-    });
-    await rabbitmq.queueDeclare({
-      queue: 'change-dlq',
-      arguments: { 'x-queue-type': 'classic' },
-      durable: true,
-      autoDelete: false
-    });
-    await rabbitmq.queueBind({
-      exchange: 'change-dlx',
-      queue: 'change-dlq',
-      routingKey: 'key-change-dlx'
-    });
-
-    await rabbitmq.exchangeDeclare({
-      exchange: 'catalog',
-      type: 'topic',
-      durable: true,
-      autoDelete: false
-    });
-    await rabbitmq.queueDeclare({
-      queue: 'change',
-      arguments: {
-        'x-queue-type': 'classic',
-        'x-dead-letter-exchange': 'change-dlx',
-        'x-dead-letter-routing-key': 'key-change-dlx'
-      },
-      durable: true,
-      autoDelete: false
-    });
-    await rabbitmq.queueBind({
-      exchange: 'catalog',
-      queue: 'change',
-      routingKey: 'catalog.change.*'
-    });
-
-    const publisher = rabbitmq.createPublisher({
-      confirm: true,
-      maxAttempts: 1,
-      exchanges: [
-        { exchange: 'catalog', type: 'topic', durable: true, autoDelete: false }
-      ],
-      queues: [
-        {
-          queue: 'change',
-          arguments: {
-            'x-queue-type': 'classic',
-            'x-dead-letter-exchange': 'change-dlx',
-            'x-dead-letter-routing-key': 'key-change-dlx'
-          },
-          durable: true,
-          autoDelete: false
-        }
-      ]
-    });
-    RabbitMQSingleton.publisher = publisher;
   }
 
   public static async close() {
@@ -116,11 +71,20 @@ export class RabbitMQSingleton {
       return;
     }
 
-    console.log('Fechando publisher...');
+    logger.debug({
+      context: 'rabbitmq',
+      data: 'Fechando publisher...'
+    });
     await RabbitMQSingleton.publisher?.close();
-    console.log('Fechando consumer...');
+    logger.debug({
+      context: 'rabbitmq',
+      data: 'Fechando consumer...'
+    });
     await RabbitMQSingleton.consumer?.close();
-    console.log('Fechando connection...');
+    logger.debug({
+      context: 'rabbitmq',
+      data: 'Fechando connection...'
+    });
     await RabbitMQSingleton.connection?.close();
   }
 }
