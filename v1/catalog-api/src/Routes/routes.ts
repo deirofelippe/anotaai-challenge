@@ -14,6 +14,31 @@ router.get('/metrics', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/healthcheck', async (req: Request, res: Response) => {
+  try {
+    logger.debug({
+      context: 'controller',
+      data: 'Iniciando o controller do healthcheck...'
+    });
+
+    const one = await new CategoryRepository().findAll(1);
+
+    logger.debug({
+      context: 'controller',
+      data: { description: 'Item buscado no banco de dados', items: one }
+    });
+    logger.debug({
+      context: 'controller',
+      data: 'Finalizando o controller do healthcheck sem erros...'
+    });
+
+    return res.status(200).json({ message: 'Healthy' });
+  } catch (error) {
+    logger.error({ context: 'controller', data: 'Erro ao no healthcheck' });
+    return res.status(500).json({ message: 'Erro no servidor' });
+  }
+});
+
 router.delete('/clear-db', async (req: Request, res: Response) => {
   try {
     await new CategoryRepository().dropCollection();
