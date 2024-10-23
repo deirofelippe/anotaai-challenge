@@ -5,6 +5,7 @@ import { sleep } from "k6";
 import optionsLoadTest from "./options-load.js";
 import optionsSmokeTest from "./options-smoke.js";
 import optionsSpikeTest from "./options-spike.js";
+import optionsSoakTest from "./options-soak.js";
 import optionsStressTest from "./options-stress.js";
 
 import { CreateCategory } from "./requests/create-category.js";
@@ -14,7 +15,7 @@ import { DeleteCategory } from "./requests/delete-category.js";
 import { UpdateProduct } from "./requests/update-product.js";
 import { UpdateCategory } from "./requests/update-category.js";
 
-export const options = optionsStressTest;
+export const options = optionsSoakTest;
 
 function generateCategory() {
   const category = {

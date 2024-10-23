@@ -1,8 +1,8 @@
 export default {
   stages: [
-    { duration: "5m", target: 200 },
-    { duration: "1h", target: 200 },
-    { duration: "5m", target: 0 },
+    { duration: "5s", target: 10 },
+    { duration: "30m", target: 10 },
+    { duration: "5s", target: 0 },
   ],
   thresholds: {
     http_req_duration: ["p(95) < 2000"],
