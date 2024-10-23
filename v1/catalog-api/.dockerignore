@@ -5,3 +5,4 @@ coverage
 .git
 node_module
 .env
+logs/*
