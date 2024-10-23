@@ -1,3 +1,4 @@
+import { logger } from '../Config/Logger';
 import { NewRecordedDataQueue } from '../Queues/NewRecordedDataQueue';
 import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { OwnerRepository } from '../Repositories/OwnerRepository';
@@ -30,6 +31,11 @@ export class DeleteProductUsecase {
   public async execute(
     input: DeleteProductUsecaseInput
   ): Promise<DeleteProductUsecaseOutput> {
+    logger.info({
+      context: 'usecase',
+      data: 'Iniciando o DeleteProductUsecase'
+    });
+
     const {
       productRepository,
       categoryRepository,
@@ -39,6 +45,10 @@ export class DeleteProductUsecase {
 
     const validator = new DeleteProductValidator();
     const { newData, errors } = validator.validate(input);
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da validação', errors }
+    });
 
     if (errors.length > 0) {
       return { errors: errors };
@@ -53,6 +63,10 @@ export class DeleteProductUsecase {
     const ownerFound = await ownerRepository.findOwner({
       owner: product.owner
     });
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da busca por owner', ownerFound }
+    });
 
     if (ownerFound.length <= 0) {
       return { errors: [{ message: 'Owner não existe' }] };
@@ -61,6 +75,13 @@ export class DeleteProductUsecase {
     const categoryFound = await categoryRepository.findCategoryByTitle({
       owner: product.owner,
       title: product.category
+    });
+    logger.debug({
+      context: 'usecase',
+      data: {
+        description: 'Output da busca por category pelo title',
+        ownerFound
+      }
     });
 
     if (categoryFound.length <= 0) {
@@ -72,6 +93,13 @@ export class DeleteProductUsecase {
       category: product.category,
       title: product.product
     });
+    logger.debug({
+      context: 'usecase',
+      data: {
+        description: 'Output da busca por product pelo title',
+        ownerFound
+      }
+    });
 
     if (productFound.length <= 0) {
       return { errors: [{ message: 'Produto não existe' }] };
@@ -79,6 +107,11 @@ export class DeleteProductUsecase {
 
     await productRepository.deleteProduct(product);
     await newRecordedDataQueue.sendMessage({ owner: product.owner });
+
+    logger.info({
+      context: 'usecase',
+      data: 'Finalizando o DeleteProductUsecase'
+    });
 
     return { errors: [] };
   }

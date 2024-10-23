@@ -4,6 +4,7 @@ import { ErrorMessages } from '../types';
 import { ProductRepository } from '../Repositories/ProductRepository';
 import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { OwnerRepository } from '../Repositories/OwnerRepository';
+import { logger } from '../Config/Logger';
 
 export type Product = {
   owner: string;
@@ -34,6 +35,11 @@ export class CreateProductUsecase {
   public async execute(
     input: CreateProductUsecaseInput
   ): Promise<CreateProductUsecaseOutput> {
+    logger.info({
+      context: 'usecase',
+      data: 'Iniciando o CreateProductUsecase'
+    });
+
     const {
       productRepository,
       categoryRepository,
@@ -43,6 +49,10 @@ export class CreateProductUsecase {
 
     const validator = new CreateProductValidator();
     const { newData, errors } = validator.validate(input);
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da validação', errors }
+    });
 
     if (errors.length > 0) {
       return { errors: errors };
@@ -59,6 +69,10 @@ export class CreateProductUsecase {
     const ownerFound = await ownerRepository.findOwner({
       owner: product.owner
     });
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da busca por owner', ownerFound }
+    });
 
     if (ownerFound.length <= 0) {
       return { errors: [{ message: 'Owner não existe' }] };
@@ -67,6 +81,13 @@ export class CreateProductUsecase {
     const categoryFound = await categoryRepository.findCategoryByTitle({
       owner: product.owner,
       title: product.category
+    });
+    logger.debug({
+      context: 'usecase',
+      data: {
+        description: 'Output da busca por category pelo title',
+        categoryFound
+      }
     });
 
     if (categoryFound.length <= 0) {
@@ -78,6 +99,13 @@ export class CreateProductUsecase {
       category: product.category,
       title: product.title
     });
+    logger.debug({
+      context: 'usecase',
+      data: {
+        description: 'Output da busca por product pelo title',
+        categoryFound
+      }
+    });
 
     if (productFound.length > 0) {
       return { errors: [{ message: 'Produto já cadastrado' }] };
@@ -85,6 +113,11 @@ export class CreateProductUsecase {
 
     await productRepository.createProduct(product);
     await newRecordedDataQueue.sendMessage({ owner: product.owner });
+
+    logger.info({
+      context: 'usecase',
+      data: 'Finalizando o CreateProductUsecase'
+    });
 
     return { errors: [] };
   }

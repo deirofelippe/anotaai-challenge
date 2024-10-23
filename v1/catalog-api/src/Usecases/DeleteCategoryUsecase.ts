@@ -3,6 +3,7 @@ import { CategoryRepository } from '../Repositories/CategoryRepository';
 import { ErrorMessages } from '../types';
 import { OwnerRepository } from '../Repositories/OwnerRepository';
 import { DeleteCategoryValidator } from '../Validators/DeleteCategoryValidator';
+import { logger } from '../Config/Logger';
 
 export type DeleteCategoryUsecaseInput = {
   category: string;
@@ -27,11 +28,20 @@ export class DeleteCategoryUsecase {
   public async execute(
     input: DeleteCategoryUsecaseInput
   ): Promise<DeleteCategoryUsecaseOutput> {
+    logger.info({
+      context: 'usecase',
+      data: 'Iniciando o DeleteCategoryUsecase'
+    });
+
     const { categoryRepository, ownerRepository, newRecordedDataQueue } =
       this.createCategoryUsecaseConstructor;
 
     const validator = new DeleteCategoryValidator();
     const { newData, errors } = validator.validate(input);
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da validação', errors }
+    });
 
     if (errors.length > 0) {
       return { errors: errors };
@@ -45,6 +55,10 @@ export class DeleteCategoryUsecase {
     const ownerFound = await ownerRepository.findOwner({
       owner: category.owner
     });
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da busca por owner', ownerFound }
+    });
 
     if (ownerFound.length <= 0) {
       return { errors: [{ message: 'Owner não existe' }] };
@@ -54,6 +68,13 @@ export class DeleteCategoryUsecase {
       owner: category.owner,
       title: category.category
     });
+    logger.debug({
+      context: 'usecase',
+      data: {
+        description: 'Output da busca por category pelo title',
+        ownerFound
+      }
+    });
 
     if (categoryFound.length <= 0) {
       return { errors: [{ message: 'Categoria não existe' }] };
@@ -61,6 +82,11 @@ export class DeleteCategoryUsecase {
 
     await categoryRepository.deleteCategory(category);
     await newRecordedDataQueue.sendMessage({ owner: category.owner });
+
+    logger.info({
+      context: 'usecase',
+      data: 'Finalizando o DeleteCategoryUsecase'
+    });
 
     return { errors: [] };
   }

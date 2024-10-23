@@ -7,6 +7,7 @@ import { ErrorMessages } from '../types';
 import { OwnerRepository } from '../Repositories/OwnerRepository';
 import { UpdateProductValidator } from '../Validators/UpdateProductValidator';
 import { CategoryRepository } from '../Repositories/CategoryRepository';
+import { logger } from '../Config/Logger';
 
 export type UpdateProductUsecaseInput = {
   owner: string;
@@ -38,6 +39,11 @@ export class UpdateProductUsecase {
   public async execute(
     input: UpdateProductUsecaseInput
   ): Promise<UpdateProductUsecaseOutput> {
+    logger.info({
+      context: 'usecase',
+      data: 'Iniciando o UpdateProductUsecase'
+    });
+
     const {
       categoryRepository,
       ownerRepository,
@@ -47,6 +53,10 @@ export class UpdateProductUsecase {
 
     const validator = new UpdateProductValidator();
     const { newData, errors } = validator.validate(input);
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da validação', errors }
+    });
 
     if (errors.length > 0) {
       return { errors: errors };
@@ -62,6 +72,10 @@ export class UpdateProductUsecase {
     const ownerFound = await ownerRepository.findOwner({
       owner: productToUpdate.owner
     });
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da busca por owner', ownerFound }
+    });
 
     if (ownerFound.length <= 0) {
       return { errors: [{ message: 'Owner não existe' }] };
@@ -70,6 +84,13 @@ export class UpdateProductUsecase {
     const categoryFound = await categoryRepository.findCategoryByTitle({
       owner: productToUpdate.owner,
       title: productToUpdate.category
+    });
+    logger.debug({
+      context: 'usecase',
+      data: {
+        description: 'Output da busca por category pelo title',
+        ownerFound
+      }
     });
 
     if (categoryFound.length <= 0) {
@@ -81,6 +102,13 @@ export class UpdateProductUsecase {
       category: productToUpdate.category,
       title: productToUpdate.product
     });
+    logger.debug({
+      context: 'usecase',
+      data: {
+        description: 'Output da busca por product pelo title',
+        ownerFound
+      }
+    });
 
     if (productFound.length <= 0) {
       return { errors: [{ message: 'Produto não existe' }] };
@@ -88,6 +116,11 @@ export class UpdateProductUsecase {
 
     await productRepository.updateProduct(productToUpdate);
     await newRecordedDataQueue.sendMessage({ owner: productToUpdate.owner });
+
+    logger.info({
+      context: 'usecase',
+      data: 'Finalizando o UpdateProductUsecase'
+    });
 
     return { errors: [] };
   }

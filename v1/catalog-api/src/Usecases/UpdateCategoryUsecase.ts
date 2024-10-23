@@ -6,7 +6,7 @@ import {
 import { ErrorMessages } from '../types';
 import { OwnerRepository } from '../Repositories/OwnerRepository';
 import { UpdateCategoryValidator } from '../Validators/UpdateCategoryValidator';
-import { log } from '../Config/Logger';
+import { log, logger } from '../Config/Logger';
 
 export type UpdateCategoryUsecaseInput = {
   owner: string;
@@ -35,11 +35,20 @@ export class UpdateCategoryUsecase {
   public async execute(
     input: UpdateCategoryUsecaseInput
   ): Promise<UpdateCategoryUsecaseOutput> {
+    logger.info({
+      context: 'usecase',
+      data: 'Iniciando o UpdateCategoryUsecase'
+    });
+
     const { categoryRepository, ownerRepository, newRecordedDataQueue } =
       this.createCategoryUsecaseConstructor;
 
     const validator = new UpdateCategoryValidator();
     const { newData, errors } = validator.validate(input);
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da validação', errors }
+    });
 
     if (errors.length > 0) {
       return { errors: errors };
@@ -54,6 +63,10 @@ export class UpdateCategoryUsecase {
     const ownerFound = await ownerRepository.findOwner({
       owner: newCategory.owner
     });
+    logger.debug({
+      context: 'usecase',
+      data: { description: 'Output da busca por owner', ownerFound }
+    });
 
     if (ownerFound.length <= 0) {
       return { errors: [{ message: 'Owner não existe' }] };
@@ -63,6 +76,13 @@ export class UpdateCategoryUsecase {
       owner: newCategory.owner,
       title: newCategory.category
     });
+    logger.debug({
+      context: 'usecase',
+      data: {
+        description: 'Output da busca por category pelo title',
+        ownerFound
+      }
+    });
 
     if (categoryFound.length <= 0) {
       return { errors: [{ message: 'Categoria não existe' }] };
@@ -70,6 +90,11 @@ export class UpdateCategoryUsecase {
 
     await categoryRepository.updateCategory(newCategory);
     await newRecordedDataQueue.sendMessage({ owner: newCategory.owner });
+
+    logger.info({
+      context: 'usecase',
+      data: 'Finalizando o UpdateCategoryUsecase'
+    });
 
     return { errors: [] };
   }
