@@ -87,7 +87,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ${{ env.WORKDIR }}/
-          file: ${{ env.WORKDIR }}/Dockerfile.prod
+          file: ${{ env.WORKDIR }}/Dockerfile
           push: true
           tags: deirofelippe/producer-anotaai-challenge:latest
 
