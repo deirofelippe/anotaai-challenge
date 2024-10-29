@@ -130,8 +130,12 @@ O código está separado nas camadas:
 > Precista instalar o [helm](https://helm.sh/docs/intro/install/)
 
 1. `kind create cluster --name anotaai`: cria um cluster kubernetes local.
-1. `kubectl create namespace anotaai`: cria um namespace para isolar os recursos que serão usados.
-1. `kubectl config set-context --current --namespace=anotaai`: configura o namespace criado como padrão, sem precisar informar `--namespace anotaai`.
+1. Criação e uso de context
+    1. `kubectl create namespace ns-anotaai`: cria um namespace para isolar os recursos que serão usados.
+    1. `kubectl config set-context anotaai --namespace=ns-anotaai --cluster=kind-anotaai --user=kind-anotaai`
+    1. `kubectl config view`
+    1. `kubectl config use-context anotaai`
+    1. `kubectl config get-contexts`
 1. `helm install prometheus prometheus-community/prometheus --version 25.27.0 --namespace anotaai --set server.service.type=LoadBalancer`: instala o prometheus
     1. `kubectl port-forward service/prometheus-server 3030:80`
 1. `helm install grafana grafana/grafana --version 8.5.2 --namespace anotaai --set service.type=LoadBalancer`: instala o prometheus
