@@ -18,27 +18,43 @@ spec:
       labels:
         app: "producer" # label usado para os recursos se comunicarem e para fazer buscas
     spec:
+      serviceAccountName: read-service-account
       containers:
         - name: "producer"
-          image: deirofelippe/producer-anotaai-challenge:v1.1
+          image: deirofelippe/producer-anotaai-challenge:v2.1
           ports:
             - containerPort: 3000
           envFrom: # injeta as variaveis de ambiente do configmap no pod
             - configMapRef:
                 name: producer-env
-          readinessProbe: # so permite o trafego para o pod, se for feita o health check e der 200, entao muda o status do pod pra READY
+          # volumeMounts:
+          #   - mountPath: /home/devfc/app/.env
+          #     name: env-file-volume
+          #     readOnly: true
+
+          startupProbe: # faz checagem se o container iniciou e pode receber as outras checagens. um container pode demorar em sua inicialização
             httpGet:
-              path: /healthy
+              path: /healthz
               port: 3000
-          livenessProbe:
+            periodSeconds: 3 # vai fazer a checagem a cada X segundos
+            failureThreshold: 30 # quantas vezes a requisição precisa falhar até o container
+          readinessProbe: # faz checagem para identificar se a aplicação está ready, enquanto não estiver ready, o container não receberá tráfego (banco ainda não subiu, as aplicações dependentes precisam se conectar).
             httpGet:
-              path: /healthy
+              path: /healthz
               port: 3000
-            initialDelaySeconds: 15 # a partir de quantos segundo vai fazer o teste? tempo que a aplicacao leva pra iniciar
-            periodSeconds: 30 # periodo que vao ser feito os testes
-            timeoutSeconds: 1 #
-            successThreshold: 3 # quantos sucessos seguidos depois de uma falha pro k8s saber que realmente está funcionando
-            failureThreshold: 3 # quantas falhas seguidas pro k8s fazer o restart do pod
+            periodSeconds: 3 # vai fazer a checagem a cada X segundos
+            failureThreshold: 3 # quantas vezes a requisição precisa falhar até o container não ser ready
+            timeoutSeconds: 2 # limite de X segundos de espera até a requisição terminar
+            successThreshold: 1 # quantas vezes a requisição precisa dar certo até a aplicação ser considerada pronta
+          livenessProbe: # faz checagem de requisição, se não passar nas regras o container vai ser reiniciado
+            httpGet:
+              path: /healthz
+              port: 3000
+            periodSeconds: 5 # vai fazer a checagem a cada X segundos
+            failureThreshold: 3 # quantas vezes a requisição precisa falhar até o container ter que ser reiniciado
+            timeoutSeconds: 2 # limite de X segundos de espera até a requisição terminar
+            successThreshold: 1 # quantas vezes a requisição precisa dar certo até a aplicação ser considerada pronta
+
           # securityContext:
           #   allowPrivilegeEscalation: false
           #   runAsUser: 0 # acessa o container como root
@@ -50,6 +66,13 @@ spec:
             limits: # maximo de recursos
               cpu: "500m" # 500m de 1000m (1000m = 1 vcpu)
               memory: 250Mi
+      # volumes:
+      #   - name: env-file-volume
+      #     configMap:
+      #       name: goserver-env
+      #       items:
+      #         - key: NAME
+      #           path: ".env"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -67,6 +90,7 @@ spec:
       labels:
         app: "consumer"
     spec:
+      serviceAccountName: read-service-account
       containers:
         - name: "consumer"
           image: deirofelippe/consumer-anotaai-challenge:v1
@@ -76,19 +100,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: consumer-env
-          readinessProbe: # so permite o trafego para o pod, se for feita o health check e der 200, entao muda o status do pod pra READY
-            httpGet:
-              path: /healthy
-              port: 3000
-          livenessProbe:
-            httpGet:
-              path: /healthy
-              port: 3000
-            initialDelaySeconds: 15 # a partir de quantos segundo vai fazer o teste? tempo que a aplicacao leva pra iniciar
-            periodSeconds: 10 # periodo que vao ser feito os testes
-            timeoutSeconds: 1 #
-            successThreshold: 1 # quantos sucessos seguidos depois de uma falha pro k8s saber que realmente está funcionando
-            failureThreshold: 3 # quantas falhas seguidas pro k8s fazer o restart do pod
           # securityContext:
           #   allowPrivilegeEscalation: false
           #   runAsUser: 0
@@ -117,6 +128,7 @@ spec:
       labels:
         app: "mongodb"
     spec:
+      serviceAccountName: read-service-account
       containers:
         - name: mongodb
           image: mongo:6.0.13-jammy
@@ -149,13 +161,9 @@ spec:
       labels:
         app: "rabbitmq"
     spec:
+      serviceAccountName: read-service-account
       containers:
-        - env:
-            - name: RABBITMQ_DEFAULT_PASS
-              value: password
-            - name: RABBITMQ_DEFAULT_USER
-              value: rabbitmq
-          image: rabbitmq:3.9.29-management
+        - image: rabbitmq:3.9.29-management
           name: rabbitmq
           ports:
             - containerPort: 5672
@@ -164,6 +172,11 @@ spec:
               protocol: TCP
             - containerPort: 15692
               protocol: TCP
+          env:
+            - name: RABBITMQ_DEFAULT_PASS
+              value: password
+            - name: RABBITMQ_DEFAULT_USER
+              value: rabbitmq
           resources: {}
       restartPolicy: Always
 ---
@@ -185,6 +198,7 @@ spec:
       labels:
         app: "localstack"
     spec:
+      serviceAccountName: read-service-account
       containers:
         - image: localstack/localstack:3.1.0
           name: localstack
