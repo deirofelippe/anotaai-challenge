@@ -19,7 +19,7 @@
   "scripts": {
     "dev": "NODE_ENV=dev LOG_LEVEL=debug npx nodemon --config ./nodemon.json --exec 'node -r @swc-node/register src/server.ts'",
     "prestart": "npm run build",
-    "start": "NODE_ENV=production node build/src/server.js",
+    "start": "NODE_ENV=production LOG_LEVEL=debug node build/src/server.js",
     "test": "NODE_ENV=test DISABLE_LOGS=true npx jest --runInBand -c ./jest.config.swc.js",
     "test:cov": "npm run test -- --coverage",
     "test:ci": "CI=true DISABLE_LOGS=true npm run test -- --coverage",
