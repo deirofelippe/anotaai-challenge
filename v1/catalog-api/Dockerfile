@@ -1,7 +1,7 @@
 FROM node:20.15.0-alpine3.20
 
 RUN apk update \
-    && apk add wget curl git netcat-openbsd mtr \
+    && apk add wget curl git netcat-openbsd mtr tcpdump iproute2-ss \
     && echo "alias la='ls -lah'" >> /home/node/.ashrc 
 
 USER node
