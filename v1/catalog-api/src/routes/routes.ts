@@ -14,7 +14,7 @@ router.get('/metrics', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/healthcheck', async (req: Request, res: Response) => {
+router.get('/healthz', async (req: Request, res: Response) => {
   try {
     logger.debug({
       context: 'controller',
