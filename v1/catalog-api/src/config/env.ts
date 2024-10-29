@@ -8,7 +8,7 @@ const isProduction = ['prod', 'production'].includes(nodeEnv);
 const isCI = process.env.CI === 'true';
 
 const disableLogs = process.env.DISABLE_LOGS === undefined ? false : true;
-const logLevel = process.env.LOG_LEVEL ?? 'info';
+const logLevel = process.env.LOG_LEVEL?.toLowerCase() ?? 'info';
 
 let mongoHost = process.env.MONGODB_HOST;
 const mongoUser = process.env.MONGODB_USER;

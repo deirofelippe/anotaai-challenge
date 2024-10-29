@@ -46,6 +46,14 @@ const winstonLogger = winston.createLogger({
   ]
 });
 
+if (logLevel === 'debug') {
+  winstonLogger.add(
+    new winston.transports.Console({
+      format: winston.format.simple()
+    })
+  );
+}
+
 type LogOpts = {
   data: any;
   context: string;
