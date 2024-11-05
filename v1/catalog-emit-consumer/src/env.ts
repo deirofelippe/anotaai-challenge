@@ -5,6 +5,9 @@ const nodeEnv: string = process.env.NODE_ENV!;
 const isTesting = ['test', 'testing'].includes(nodeEnv);
 const isProduction = ['prod', 'production'].includes(nodeEnv);
 
+const disableLogs = process.env.DISABLE_LOGS === undefined ? false : true;
+const logLevel = process.env.LOG_LEVEL?.toLowerCase() ?? 'info';
+
 const mongoHost = process.env.MONGODB_HOST;
 const mongoUser = process.env.MONGODB_USER;
 const mongoPassword = process.env.MONGODB_PASSWORD;
@@ -21,6 +24,8 @@ const rabbitHost = process.env.RABBITMQ_HOST;
 const rabbitPort = process.env.RABBITMQ_PORT;
 
 export {
+  disableLogs,
+  logLevel,
   nodeEnv,
   isTesting,
   isProduction,
