@@ -1,4 +1,5 @@
-import { MongoInstance } from './MongoInstance';
+import { Category } from './CompileCatalogController';
+import { MongoInstance } from './config/mongo-instance';
 
 export type FindProductsAndCategoriesByOwnerOutput = {
   products: any[];
@@ -12,16 +13,23 @@ export type FindProductsAndCategoriesByOwnerInput = {
 export class CatalogRepository {
   public async findProductsAndCategoriesByOwner(
     input: FindProductsAndCategoriesByOwnerInput
-  ): Promise<FindProductsAndCategoriesByOwnerOutput> {
+  ): Promise<Category[]> {
     const db = MongoInstance.getInstance();
 
     try {
-      const result = await db.collection('').find({}).toArray();
-      const products = [];
-      const categories = [];
-      return { products, categories };
+      const catalog = await db
+        .collection<Category>('catalog')
+        .find({ owner: input.owner })
+        .project<Category>({
+          _id: 0,
+          owner: 1,
+          catalog: 1
+        })
+        .toArray();
+
+      return catalog;
     } catch (error) {
-      console.error(error);
+      console.log(error);
       throw error;
     }
   }
