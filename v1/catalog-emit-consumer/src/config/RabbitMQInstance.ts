@@ -10,6 +10,7 @@ import {
   ConsumerStatus,
   Publisher
 } from 'rabbitmq-client';
+import { logger } from './logger';
 
 export class RabbitMQInstance {
   private static connection?: Connection = undefined;
@@ -20,6 +21,10 @@ export class RabbitMQInstance {
 
   public static getInstance() {
     if (!RabbitMQInstance.connection) {
+      logger.error({
+        context: 'rabbitmq',
+        data: 'A conexão com o RabbitMQ não foi aberta.'
+      });
       throw new Error('A conexão com o RabbitMQ não foi aberta.');
     }
 
@@ -28,6 +33,10 @@ export class RabbitMQInstance {
 
   public static getPublisher() {
     if (!RabbitMQInstance.connection) {
+      logger.error({
+        context: 'rabbitmq',
+        data: 'A conexão com o RabbitMQ não foi aberta.'
+      });
       throw new Error('A conexão com o RabbitMQ não foi aberta.');
     }
 
@@ -44,10 +53,16 @@ export class RabbitMQInstance {
     const rabbitmq = new Connection(url);
 
     rabbitmq.on('error', (err) => {
-      console.log('RabbitMQ connection error', err);
+      logger.debug({
+        context: 'rabbitmq',
+        data: { description: 'RabbitMQ connection error', error: err }
+      });
     });
     rabbitmq.on('connection', () => {
-      console.log('RabbitMQ connection successfully');
+      logger.debug({
+        context: 'rabbitmq',
+        data: 'RabbitMQ connection successfully'
+      });
     });
     RabbitMQInstance.connection = rabbitmq;
 
@@ -142,11 +157,20 @@ export class RabbitMQInstance {
       return;
     }
 
-    console.log('Fechando publisher...');
+    logger.debug({
+      context: 'rabbitmq',
+      data: 'Fechando publisher...'
+    });
     await RabbitMQInstance.publisher?.close();
-    console.log('Fechando consumer...');
+    logger.debug({
+      context: 'rabbitmq',
+      data: 'Fechando consumer...'
+    });
     await RabbitMQInstance.consumer?.close();
-    console.log('Fechando connection...');
+    logger.debug({
+      context: 'rabbitmq',
+      data: 'Fechando connection...'
+    });
     await RabbitMQInstance.connection?.close();
   }
 }
