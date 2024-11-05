@@ -1,4 +1,9 @@
-import { rabbitUsername, rabbitPassword, rabbitHost, rabbitPort } from '../env';
+import {
+  rabbitUsername,
+  rabbitPassword,
+  rabbitHost,
+  rabbitPort
+} from '../config/env';
 import { Connection, Consumer, Publisher } from 'rabbitmq-client';
 import { logger } from './logger';
 import { declareExchangeAndQueue } from './rabbitmq/declarations';

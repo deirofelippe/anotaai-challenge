@@ -1,6 +1,6 @@
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import { disableLogs, logLevel } from '../env';
+import { disableLogs, logLevel } from '../config/env';
 import { DateTime } from 'luxon';
 
 export const log = (obj: any) => {
@@ -38,7 +38,7 @@ const winstonLogger = winston.createLogger({
   format: winston.format.json(),
   transports: [
     new DailyRotateFile({
-      filename: `./logs/producer-%DATE%.log`,
+      filename: `./logs/consumer-%DATE%.log`,
       datePattern: 'YYYY-MM-DD',
       maxSize: '20m',
       maxFiles: '7d'

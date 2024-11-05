@@ -4,7 +4,7 @@ import {
   mongoPassword,
   mongoPort,
   mongoUser
-} from '../env';
+} from '../config/env';
 import { MongoClient } from 'mongodb';
 import { logger } from '../config/logger';
 
