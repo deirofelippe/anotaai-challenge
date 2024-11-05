@@ -30,7 +30,7 @@ process.on(
   'uncaughtException',
   onShutdown({ exitCode: 1, signalCode: 'uncaughtException' })
 );
-//
+
 process.on(
   'unhandledRejection',
   onShutdown({ exitCode: 1, signalCode: 'unhandledRejection' })

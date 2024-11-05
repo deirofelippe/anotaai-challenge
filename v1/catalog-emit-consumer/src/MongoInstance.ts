@@ -6,6 +6,7 @@ import {
   mongoUser
 } from './env';
 import { MongoClient } from 'mongodb';
+import { logger } from './config/logger';
 
 export class MongoInstance {
   private static connection?: MongoClient = undefined;
@@ -14,6 +15,10 @@ export class MongoInstance {
 
   public static getInstance() {
     if (!MongoInstance.connection) {
+      logger.error({
+        context: 'mongodb',
+        data: 'A conexão com o MongoDB não foi aberta.'
+      });
       throw new Error('A conexão com o MongoDB não foi aberta.');
     }
 
@@ -31,7 +36,10 @@ export class MongoInstance {
       auth: { username: mongoUser, password: mongoPassword }
     });
     MongoInstance.connection = await client.connect();
-    console.log('MongoDB connection successfully');
+    logger.error({
+      context: 'mongodb',
+      data: 'MongoDB connection successfully'
+    });
 
     return this;
   }
