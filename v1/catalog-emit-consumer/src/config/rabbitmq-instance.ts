@@ -1,16 +1,8 @@
-import { CatalogRepository } from './CatalogRepository';
-import { CompileCatalogController } from './CompileCatalogController';
-import { CompileCatalogUsecase } from './CompileCatalogUsecase';
-import { rabbitUsername, rabbitPassword, rabbitHost, rabbitPort } from './env';
-import {
-  Connection,
-  Consumer,
-  ConsumerHandler,
-  ConsumerProps,
-  ConsumerStatus,
-  Publisher
-} from 'rabbitmq-client';
+import { rabbitUsername, rabbitPassword, rabbitHost, rabbitPort } from '../env';
+import { Connection, Consumer, Publisher } from 'rabbitmq-client';
 import { logger } from './logger';
+import { declareExchangeAndQueue } from './rabbitmq/declarations';
+import { createConsumer } from './rabbitmq/create-consumer';
 
 export class RabbitMQInstance {
   private static connection?: Connection = undefined;
@@ -66,90 +58,12 @@ export class RabbitMQInstance {
     });
     RabbitMQInstance.connection = rabbitmq;
 
-    await this.declareExchangeAndQueue();
-    await this.createConsumer();
+    await declareExchangeAndQueue(rabbitmq);
+    const consumer = await createConsumer(rabbitmq);
+
+    RabbitMQInstance.consumer = consumer;
 
     return this;
-  }
-
-  private static async declareExchangeAndQueue() {
-    const rabbitmq = RabbitMQInstance.connection!;
-
-    await rabbitmq.exchangeDeclare({
-      exchange: 'change-dlx',
-      type: 'direct',
-      durable: true,
-      autoDelete: false
-    });
-    await rabbitmq.queueDeclare({
-      queue: 'change-dlq',
-      arguments: { 'x-queue-type': 'classic' },
-      durable: true,
-      autoDelete: false
-    });
-    await rabbitmq.queueBind({
-      exchange: 'change-dlx',
-      queue: 'change-dlq',
-      routingKey: 'key-change-dlx'
-    });
-
-    await rabbitmq.exchangeDeclare({
-      exchange: 'catalog',
-      type: 'topic',
-      durable: true,
-      autoDelete: false
-    });
-    await rabbitmq.queueDeclare({
-      queue: 'change',
-      arguments: {
-        'x-queue-type': 'classic',
-        'x-dead-letter-exchange': 'change-dlx',
-        'x-dead-letter-routing-key': 'key-change-dlx'
-      },
-      durable: true,
-      autoDelete: false
-    });
-    await rabbitmq.queueBind({
-      exchange: 'catalog',
-      queue: 'change',
-      routingKey: 'catalog.change.*'
-    });
-  }
-
-  public static async createConsumer() {
-    const rabbitmq = RabbitMQInstance.connection!;
-    const compileCatalogController = new CompileCatalogController(
-      new CompileCatalogUsecase(new CatalogRepository())
-    );
-
-    const props: ConsumerProps = {
-      queue: 'change',
-      queueOptions: {
-        queue: 'change',
-        arguments: {
-          'x-queue-type': 'classic',
-          'x-dead-letter-exchange': 'change-dlx',
-          'x-dead-letter-routing-key': 'key-change-dlx'
-        },
-        durable: true,
-        autoDelete: false
-      },
-      exchanges: [
-        {
-          exchange: 'catalog',
-          type: 'topic',
-          autoDelete: false,
-          durable: true
-        }
-      ],
-      qos: { prefetchCount: 1 }
-    };
-
-    const consumer = rabbitmq.createConsumer(
-      props,
-      compileCatalogController.execute.bind(compileCatalogController)
-    );
-    RabbitMQInstance.consumer = consumer;
   }
 
   public static async close() {
