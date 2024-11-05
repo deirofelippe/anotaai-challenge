@@ -1,5 +1,5 @@
 import { CatalogS3 } from './catalog-s3';
-import { CatalogRepository } from './CatalogRepository';
+import { CatalogRepository } from './catalog-repository';
 
 export type CompileCatalogUsecaseOutput = {
   owner: string;

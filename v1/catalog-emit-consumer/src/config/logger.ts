@@ -1,6 +1,6 @@
 import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import { disableLogs, logLevel } from './env';
+import { disableLogs, logLevel } from '../env';
 import { DateTime } from 'luxon';
 
 export const log = (obj: any) => {

@@ -1,5 +1,5 @@
 import { AsyncMessage, ConsumerStatus } from 'rabbitmq-client';
-import { CompileCatalogUsecase } from './CompileCatalogUsecase';
+import { CompileCatalogUsecase } from './compile-catalog-usecase';
 
 export type Category = {
   owner: string;

@@ -4,9 +4,9 @@ import {
   mongoPassword,
   mongoPort,
   mongoUser
-} from './env';
+} from '../env';
 import { MongoClient } from 'mongodb';
-import { logger } from './config/logger';
+import { logger } from '../config/logger';
 
 export class MongoInstance {
   private static connection?: MongoClient = undefined;

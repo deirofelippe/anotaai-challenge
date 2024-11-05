@@ -1,13 +1,14 @@
 import Connection, { Consumer, ConsumerProps } from 'rabbitmq-client';
-import { CompileCatalogController } from '../../CompileCatalogController';
-import { CompileCatalogUsecase } from '../../CompileCatalogUsecase';
-import { CatalogRepository } from '../../CatalogRepository';
+import { CompileCatalogController } from '../../compile-catalog-controller';
+import { CompileCatalogUsecase } from '../../compile-catalog-usecase';
+import { CatalogRepository } from '../../catalog-repository';
+import { CatalogS3 } from '../../catalog-s3';
 
 export async function createConsumer(
   rabbitmqConnection: Connection
 ): Promise<Consumer> {
   const compileCatalogController = new CompileCatalogController(
-    new CompileCatalogUsecase(new CatalogRepository())
+    new CompileCatalogUsecase(new CatalogRepository(), new CatalogS3())
   );
 
   const props: ConsumerProps = {

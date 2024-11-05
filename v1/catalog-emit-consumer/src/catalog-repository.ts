@@ -1,4 +1,4 @@
-import { Category } from './CompileCatalogController';
+import { Category } from './compile-catalog-controller';
 import { MongoInstance } from './config/mongo-instance';
 
 export type FindProductsAndCategoriesByOwnerOutput = {

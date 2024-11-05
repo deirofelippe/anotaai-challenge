@@ -1,5 +1,5 @@
-import { MongoInstance } from './MongoInstance';
-import { RabbitMQInstance } from './RabbitMQInstance';
+import { MongoInstance } from './config/mongo-instance';
+import { RabbitMQInstance } from './config/rabbitmq-instance';
 
 RabbitMQInstance.connect().then(() => {});
 MongoInstance.connect().then(() => {});
